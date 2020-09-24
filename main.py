@@ -1,24 +1,24 @@
 import api
 from game_layer import GameLayer
 
-api_key = ""
+api_key = ''
 
 with open('super.secret') as f:
     api_key = f.readline().rstrip()
 
 # The different map names can be found on considition.com/rules
-map_name = "training1"  # TODO: You map choice here. If left empty, the map "training1" will be selected.
+map_name = 'training1'  # TODO: You map choice here. If left empty, the map 'training1' will be selected.
 
 game_layer = GameLayer(api_key)
 
 def main():
     game_layer.new_game(map_name)
-    print("Starting game: " + game_layer.game_state.game_id)
+    print('Starting game: ' + game_layer.game_state.game_id)
     game_layer.start_game()
     while game_layer.game_state.turn < game_layer.game_state.max_turns:
         take_turn()
-    print("Done with game: " + game_layer.game_state.game_id)
-    print("Final score was: " + str(game_layer.get_score()["finalScore"]))
+    print('Done with game: ' + game_layer.game_state.game_id)
+    print('Final score was: ' + str(game_layer.get_score()['finalScore']))
 
 
 def take_turn():
@@ -60,8 +60,8 @@ def take_turn():
     for message in game_layer.game_state.messages:
         print(message)
     for error in game_layer.game_state.errors:
-        print("Error: " + error)
+        print('Error: ' + error)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

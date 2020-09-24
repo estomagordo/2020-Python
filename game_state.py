@@ -3,20 +3,20 @@ from typing import List
 
 class GameState:
     def __init__(self, map_values):
-        self.game_id: str = map_values["gameId"]
-        self.map_name: str = map_values["mapName"]
-        self.max_turns: int = map_values["maxTurns"]
-        self.max_temp: float = map_values["maxTemp"]
-        self.min_temp: float = map_values["minTemp"]
-        self.map: List[List[int]] = map_values["map"]
+        self.game_id: str = map_values['gameId']
+        self.map_name: str = map_values['mapName']
+        self.max_turns: int = map_values['maxTurns']
+        self.max_temp: float = map_values['maxTemp']
+        self.min_temp: float = map_values['minTemp']
+        self.map: List[List[int]] = map_values['map']
         self.energy_levels: List[EnergyLevel] = []
-        for level in map_values["energyLevels"]:
+        for level in map_values['energyLevels']:
             self.energy_levels.append(EnergyLevel(level))
         self.available_residence_buildings: List[BlueprintResidenceBuilding] = []
-        for building in map_values["availableResidenceBuildings"]:
+        for building in map_values['availableResidenceBuildings']:
             self.available_residence_buildings.append(BlueprintResidenceBuilding(building))
         self.available_utility_buildings: List[BlueprintUtilityBuilding] = []
-        for building in map_values["availableUtilityBuildings"]:
+        for building in map_values['availableUtilityBuildings']:
             self.available_utility_buildings.append(BlueprintUtilityBuilding(building))   
         self.available_upgrades: List[Upgrade] = []
         for upgrade in map_values['availableUpgrades']:
