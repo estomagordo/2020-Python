@@ -1,12 +1,15 @@
 import api
 from game_layer import GameLayer
 
-api_key = ""   # TODO: Your api key here
+api_key = ""
+
+with open('super.secret') as f:
+    api_key = f.readline().rstrip()
+
 # The different map names can be found on considition.com/rules
 map_name = "training1"  # TODO: You map choice here. If left empty, the map "training1" will be selected.
 
-game_layer: GameLayer = None
-
+game_layer = GameLayer(api_key)
 
 def main():
     game_layer.new_game(map_name)
