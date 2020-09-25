@@ -1,4 +1,3 @@
-import api
 from game_layer import GameLayer
 
 api_key = ''
