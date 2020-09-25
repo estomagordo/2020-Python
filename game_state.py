@@ -6,21 +6,11 @@ class GameState:
         self.max_temp = map_values['maxTemp']
         self.min_temp = map_values['minTemp']
         self.map = map_values['map']
-        self.energy_levels = []
-        for level in map_values['energyLevels']:
-            self.energy_levels.append(EnergyLevel(level))
-        self.available_residence_buildings = []
-        for building in map_values['availableResidenceBuildings']:
-            self.available_residence_buildings.append(BlueprintResidenceBuilding(building))
-        self.available_utility_buildings = []
-        for building in map_values['availableUtilityBuildings']:
-            self.available_utility_buildings.append(BlueprintUtilityBuilding(building))   
-        self.available_upgrades = []
-        for upgrade in map_values['availableUpgrades']:
-            self.available_upgrades.append(Upgrade(upgrade))
-        self.effects = []
-        for effect in map_values['effects']:
-            self.effects.append(Effect(effect))
+        self.energy_levels = list(map(EnergyLevel, map_values['energyLevels']))
+        self.available_residence_buildings = list(map(BlueprintResidenceBuilding, map_values['availableResidenceBuildings']))
+        self.available_utility_buildings = list(map(BlueprintUtilityBuilding, map_values['availableUitlityBuildings']))
+        self.available_upgrades = list(map(Upgrade, map_values['availableUpgrades']))
+        self.effects = list(map(Effect, map_values['effects']))
 
         self.turn = 0
         self.funds = 0
@@ -42,12 +32,8 @@ class GameState:
         self.current_temp = state['currentTemp']
         self.queue_happiness = state['queueHappiness']
         self.housing_queue = state['housingQueue']
-        self.residences = []
-        for building in state['residenceBuildings']:
-            self.residences.append(Residence(building))
-        self.utilities = []
-        for building in state['utilityBuildings']:
-            self.utilities.append(Utility(building))
+        self.residences = list(map(Residence, state['residenceBuildings']))
+        self.utilities = list(map(Utility, state['utilityBuildings']))
         self.errors = state['errors']
         self.messages = state['messages']
 
