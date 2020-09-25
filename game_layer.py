@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from api import Api
 from game_state import GameState
 
@@ -49,7 +47,7 @@ class GameLayer:
         self.game_state.update_state(self.api.buy_upgrades({'position': position, 'upgradeAction': upgrade}, self.game_state.game_id))
 
     def get_score(self):
-        return self.api.get_score(self.api_key, self.game_state.game_id)
+        return self.api.get_score(self.game_state.game_id)
 
     def get_game_info(self, game_id):
         self.game_state = GameState(self.api.get_game_info(game_id))
