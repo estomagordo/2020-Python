@@ -80,7 +80,23 @@ def record():
 
 
 def interactive():
-    pass #TODO
+    game_layer.new_game(map_name)
+    print('Starting', 'interactive game:', game_layer.game_state.game_id)
+    game_layer.start_game()  
+
+    commands = []
+   
+    while game_layer.game_state.turn < game_layer.game_state.max_turns:
+        s = ''
+
+        while not game_layer.validate(s):
+            s = input()
+
+        game_layer.translate(s.split())
+        print(game_layer.game_state)
+        print()
+
+    play(commands)
 
 
 def endall():
