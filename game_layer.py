@@ -12,8 +12,9 @@ class GameLayer:
         
         self.game_state = GameState(self.api.new_game(game_options))
 
-    def end_game(self):
-        self.api.end_game(self.game_state.game_id)
+    def end_game(self, game_id=''):
+        param = game_id if game_id else self.game_state.game_id
+        self.api.end_game(param)
 
     def start_game(self):
         self.game_state.update_state(self.api.start_game(self.game_state.game_id))
@@ -96,3 +97,6 @@ class GameLayer:
             if effect.name == effect_name:
                 return effect
         return None
+
+    def get_games(self):
+        return self.api.get_games()

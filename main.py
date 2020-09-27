@@ -37,6 +37,8 @@ def simple():
     print('Done with game: ' + game_layer.game_state.game_id)
     print('Final score was: ' + str(game_layer.get_score()['finalScore']))
 
+    game_layer.end_game()
+    
     write(filename, commands)
 
 def replay(filename):
@@ -74,6 +76,14 @@ def interactive():
     pass #TODO
 
 
+def endall():
+    games = game_layer.get_games()
+
+    for game in games:
+        game_layer.end_game(game['gameId'])
+        print('Deleted', game['gameId'])
+
+
 def main():
     if len(argv) < 2:
         die('Supply command!')
@@ -93,6 +103,8 @@ def main():
             record()
         elif mode == 'interactive':
             interactive()
+        elif mode == 'endall':
+            endall()
         else:
             die('Unknown command')
 
