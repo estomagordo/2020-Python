@@ -24,6 +24,19 @@ class GameState:
         self.errors = []
         self.messages = []
 
+    def __str__(self):
+        parts = []
+
+        parts.append(f'Map name: {self.map_name}. Turn: {self.turn}')
+        
+        for row in self.map:
+            parts.append(' '.join(str(num) for num in row))
+
+        parts.append(f'Funds: {self.funds}. Housing queue: {self.housing_queue}')
+        parts.append(f'Current temp: {self.current_temp}. Min temp: {self.min_temp}. Max temp: {self.max_temp}')
+
+        return '\n'.join(parts)
+
     def update_state(self, state):
         self.turn = state['turn']
         self.funds = state['funds']

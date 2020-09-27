@@ -22,12 +22,8 @@ def write(filename, commands):
         for command in commands:
             f.write(command)
 
-def play(commands, method):
-    filename = f'games\\{map_name}-{str(time()).split(".")[0]}'
-
-    game_layer.new_game(map_name)
-    print('Starting', method, 'game:', game_layer.game_state.game_id)
-    game_layer.start_game()    
+def play(commands):
+    filename = f'games\\{map_name}-{str(time()).split(".")[0]}'  
 
     print('Done with game: ' + game_layer.game_state.game_id)
     print('Final score was: ' + str(game_layer.get_score()['finalScore']))
@@ -37,20 +33,28 @@ def play(commands, method):
     write(filename, commands)
 
 def simple():
+    game_layer.new_game(map_name)
+    print('Starting', 'simple game:', game_layer.game_state.game_id)
+    game_layer.start_game()  
+
     commands = []
    
     while game_layer.game_state.turn < game_layer.game_state.max_turns:
         commands.append(take_turn())
 
-    play(commands, 'simple')
+    play(commands)
 
 def replay(filename):
+    game_layer.new_game(map_name)
+    print('Starting', 'replay game:', game_layer.game_state.game_id)
+    game_layer.start_game()  
+
     commands = []
 
     with open(filename) as f:
         commands.append(f.readline())
 
-    play(commands, 'replay')
+    play(commands)
 
 def play_recorded(name=''):
     recordings = glob.glob('/games/*')
