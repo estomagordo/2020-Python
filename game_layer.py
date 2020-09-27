@@ -13,7 +13,7 @@ class GameLayer:
         if command == 'wait':
             return self.wait()
 
-        pos = {'X': int(instruction[1]), 'Y': int(instruction[2]))}
+        pos = {'X': int(instruction[1]), 'Y': int(instruction[2])}
 
         if command == 'place_foundation':
             return self.place_foundation(pos, instruction[3])
