@@ -1,2 +1,3 @@
 super.secret
 __pycache__/*
+.vscode/*
