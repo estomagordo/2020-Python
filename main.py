@@ -117,8 +117,13 @@ def take_turn():
 
     command = ''
 
-    if len(state.residences) < 1:
+    x = -1
+    y = -1
+
+    if len(state.residences) < 3:
         for i in range(len(state.map)):
+            if x > -1:
+                break
             for j in range(len(state.map)):
                 if state.map[i][j] == 0:
                     x = i
@@ -126,7 +131,6 @@ def take_turn():
                     break
 
         command = game_layer.place_foundation((x, y), game_layer.game_state.available_residence_buildings[0].building_name)
-
     else:
         the_only_residence = state.residences[0]
         if the_only_residence.build_progress < 100:
