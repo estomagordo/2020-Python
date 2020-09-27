@@ -83,7 +83,7 @@ def endall():
     for game in games:
         if game['active']:
             game_layer.end_game(game['gameId'])
-            print('Ended, game['gameId'])
+            print('Ended', game['gameId'])
 
 def main():
     if len(argv) < 2:
