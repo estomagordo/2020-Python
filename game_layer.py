@@ -26,6 +26,31 @@ class GameLayer:
         if command == 'adjust_energy_level':
             return self.adjust_energy_level(pos, float(instruction[3]))
         return self.buy_upgrade(pos, instruction[3])
+
+    def validate(self, s):
+        instruction = s.split()
+
+        command = instruction[0]
+
+        if command == 'wait':
+            return True
+
+        if command not in ('place_foundation', 'build', 'maintenance', 'demolish', 'adjust_energy_level', 'buy_upgrade'):
+            return False
+
+        if len(instruction) < 3:
+            return False
+
+        if not instruction[1].isdigit() or not instruction[2].isdigit():
+            return False
+
+        if command in ('place_foundation', 'buy_upgrade'):
+            return len(instruction) == 4
+
+        if command == 'adjust_energy_level':
+            return len(instruction) == 4 and instruction[3].isfloat()
+
+        return True
     
     def new_game(self, map_name='training0'):
         game_options = {'mapName': map_name}
