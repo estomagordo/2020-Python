@@ -4,17 +4,6 @@ from requests import RequestException
 
 base_api_path = 'https://game.considition.com/api/game/'
 
-class SessUpdater(object):
-    def __call__(self, func):
-        def wrapper(*args, **kwargs):
-            instance = args[0]
-            if not instance.sess:
-                instance.sess = requests.Session()
-            return func(args, kwargs)
-
-        return wrapper
-
-
 class Api:
     def __init__(self, api_key):
         self.api_key = api_key
