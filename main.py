@@ -18,13 +18,13 @@ game_layer = GameLayer(api_key)
 
 
 def write(filename, commands):
-    with open(filename) as f:
+    with open(filename, 'w') as f:
         for command in commands:
             f.write(command)
 
 
 def simple():
-    filename = '\\games\\' +  map_name + str(time()).split('.')[0]
+    filename = f'games\\{map_name}-{str(time()).split(".")[0]}'
     commands = []
 
     game_layer.new_game(map_name)

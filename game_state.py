@@ -8,7 +8,7 @@ class GameState:
         self.map = map_values['map']
         self.energy_levels = list(map(EnergyLevel, map_values['energyLevels']))
         self.available_residence_buildings = list(map(BlueprintResidenceBuilding, map_values['availableResidenceBuildings']))
-        self.available_utility_buildings = list(map(BlueprintUtilityBuilding, map_values['availableUitlityBuildings']))
+        self.available_utility_buildings = list(map(BlueprintUtilityBuilding, map_values['availableUtilityBuildings']))
         self.available_upgrades = list(map(Upgrade, map_values['availableUpgrades']))
         self.effects = list(map(Effect, map_values['effects']))
 
