@@ -1,3 +1,5 @@
+from sys import argv
+
 from game_layer import GameLayer
 
 api_key = ''
@@ -10,7 +12,8 @@ map_name = 'training1'  # TODO: You map choice here. If left empty, the map 'tra
 
 game_layer = GameLayer(api_key)
 
-def main():
+
+def simple():
     game_layer.new_game(map_name)
     print('Starting game: ' + game_layer.game_state.game_id)
     game_layer.start_game()
@@ -19,6 +22,38 @@ def main():
     print('Done with game: ' + game_layer.game_state.game_id)
     print('Final score was: ' + str(game_layer.get_score()['finalScore']))
 
+
+def play_recorded(name=''):
+    pass #TODO
+
+
+def die(message=''):
+    print('Fatal. Exiting. ' + message)
+
+
+def record():
+    pass #TODO
+
+
+def main():
+    if len(argv) < 2:
+        die('Supply command!')
+    else:
+        mode = argv[1]
+
+        if mode == 'simple':
+            simple()
+        elif mode == 'latest':
+            play_recorded()
+        elif mode == 'named':
+            if len(argv) < 3:
+                die('Missing parameter: Name')
+            else:
+                play_recorded(argv[2])
+        elif mode == 'record':
+            record()
+        else:
+            die('Unknown command')
 
 def take_turn():
     # TODO Implement your artificial intelligence here.
