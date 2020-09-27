@@ -6,6 +6,26 @@ class GameLayer:
     def __init__(self, api_key):
         self.game_state = None
         self.api = Api(api_key)
+
+    def translate(self, instruction):
+        command = instruction[0]
+
+        if command == 'wait':
+            return self.wait()
+
+        pos = {'X': int(instruction[1]), 'Y': int(instruction[2]))}
+
+        if command == 'place_foundation':
+            return self.place_foundation(pos, instruction[3])
+        if command == 'build':
+            return self.build(pos)
+        if command == 'maintenance':
+            return self.maintenance(pos)
+        if command == 'demolish':
+            return self.demolish(pos)
+        if command == 'adjust_energy_level':
+            return self.adjust_energy_level(pos, float(instruction[3]))
+        return self.buy_upgrade(pos, instruction[3])
     
     def new_game(self, map_name='training0'):
         game_options = {'mapName': map_name}
@@ -23,7 +43,7 @@ class GameLayer:
         position = {'X': pos[0], 'Y': pos[1]}
         foundation = {'Position': position, 'BuildingName': building_name}
 
-        self.game_state.map[pos[1]][pos[0]] = 2
+        self.game_state.map[pos[0]][pos[1]] = 2
         self.game_state.update_state(self.api.place_foundation(foundation, self.game_state.game_id))
 
         return f'place_foundation {pos[0]} {pos[1]} {building_name}\n'

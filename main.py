@@ -22,17 +22,12 @@ def write(filename, commands):
         for command in commands:
             f.write(command)
 
-
-def simple():
+def play(commands, method):
     filename = f'games\\{map_name}-{str(time()).split(".")[0]}'
-    commands = []
 
     game_layer.new_game(map_name)
-    print('Starting game: ' + game_layer.game_state.game_id)
-    game_layer.start_game()
-
-    while game_layer.game_state.turn < game_layer.game_state.max_turns:
-        commands.append(take_turn())
+    print('Starting', method, 'game:', game_layer.game_state.game_id)
+    game_layer.start_game()    
 
     print('Done with game: ' + game_layer.game_state.game_id)
     print('Final score was: ' + str(game_layer.get_score()['finalScore']))
@@ -41,13 +36,21 @@ def simple():
     
     write(filename, commands)
 
+def simple():
+    commands = []
+   
+    while game_layer.game_state.turn < game_layer.game_state.max_turns:
+        commands.append(take_turn())
+
+    play(commands, 'simple')
+
 def replay(filename):
     commands = []
 
     with open(filename) as f:
         commands.append(f.readline())
 
-    #TODO
+    play(commands, 'replay')
 
 def play_recorded(name=''):
     recordings = glob.glob('/games/*')
@@ -110,10 +113,6 @@ def main():
             die('Unknown command')
 
 def take_turn():
-    # TODO Implement your artificial intelligence here.
-    # TODO Take one action per turn until the game ends.
-    # TODO The following is a short example of how to use the StarterKit
-
     state = game_layer.game_state
 
     command = ''
@@ -122,7 +121,6 @@ def take_turn():
     y = -1
 
     maxrescount = 3
-    curres = 0
 
     if len(state.residences) < maxrescount:
         for i in range(len(state.map)):
@@ -136,12 +134,25 @@ def take_turn():
 
         command = game_layer.place_foundation((x, y), game_layer.game_state.available_residence_buildings[0].building_name)
     else:
-        residence = state.residences[curres]
+        building = False
 
-        if residence.build_progress < 100:
-            command = game_layer.build((residence.X, residence.Y))
-        elif curres < maxrescount - 1:
-            curres += 1
+        for residence in state.residences:
+            if residence.build_progress < 100:
+                command = game_layer.build((residence.X, residence.Y))
+                building = True
+                break
+
+        if not building:
+            healing = False
+            
+            for residence in state.residences:
+                if residence.health < 30:
+                    command = game_layer.maintenance((residence.X, residence.Y))
+                    healing = True
+                    break
+
+            if not healing:
+                command = game_layer.wait()
         # elif residence.health < 50:
         #     command = game_layer.maintenance((residence.X, residence.Y))
         # elif residence.temperature < 18:
@@ -158,8 +169,8 @@ def take_turn():
         #     command = game_layer.adjust_energy_level((residence.X, residence.Y), energy)
         # elif state.available_upgrades[0].name not in residence.effects:
         #     command =  game_layer.buy_upgrade((residence.X, residence.Y), state.available_upgrades[0].name)
-        else:
-            command = game_layer.wait()
+        # else:
+        #     command = game_layer.wait()
 
     for message in game_layer.game_state.messages:
         print(message)
