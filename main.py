@@ -35,6 +35,10 @@ def record():
     pass #TODO
 
 
+def interactive():
+    pass #TODO
+
+
 def main():
     if len(argv) < 2:
         die('Supply command!')
@@ -52,6 +56,8 @@ def main():
                 play_recorded(argv[2])
         elif mode == 'record':
             record()
+        elif mode == 'interactive':
+            interactive()
         else:
             die('Unknown command')
 
