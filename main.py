@@ -1,3 +1,6 @@
+import glob
+import os
+
 from sys import argv
 
 from game_layer import GameLayer
@@ -23,8 +26,27 @@ def simple():
     print('Final score was: ' + str(game_layer.get_score()['finalScore']))
 
 
+def replay(filename):
+    commands = []
+
+    with open(filename) as f:
+        commands.append(f.readline())
+
+    #TODO
+
 def play_recorded(name=''):
-    pass #TODO
+    recordings = glob.glob('/games/*')
+
+    if not recordings:
+        die('No available games!')
+    else:
+        if not name:
+            replay(max(recordings, key=os.path.getctime))
+        else:
+            if name not in recordings:
+                die('Game not found!')
+            else:
+                replay(name)
 
 
 def die(message=''):
