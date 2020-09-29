@@ -51,8 +51,13 @@ class GameLayer:
             return len(instruction) == 4
 
         if command == 'adjust_energy_level':
-            return len(instruction) == 4 and instruction[3].isfloat()
-
+            if len(instruction) != 4:
+                return False
+            try:
+                float(instruction[3])
+                return True
+            except:
+                return False
         return True
     
     def new_game(self, map_name='training0'):
