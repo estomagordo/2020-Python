@@ -14,8 +14,7 @@ api_key = ''
 with open('super.secret') as f:
     api_key = f.readline().rstrip()
 
-# The different map names can be found on considition.com/rules
-map_name = 'training1'  # TODO: You map choice here. If left empty, the map 'training1' will be selected.
+map_name = 'training1'
 
 game_layer = GameLayer(api_key)
 
@@ -206,17 +205,19 @@ def take_turn():
 
 def take_turn2(last_adjusted):
     INSULATION_THRESHOLD = 7200
-    WAITING_LIMIT = 3000
+    WAITING_LIMIT = 1000
     REPAIR_LIMIT = 42
-    HIGHRISE_LIMIT = 26000
+    HIGHRISE_LIMIT = 66000
     MODERN_LIMIT = 11000
     APARTMENTS_LIMIT = 7800
     MAX_RESIDENCES = 10
-    LOW_TEMP = 18.0
+    LOW_TEMP = 18.5
     HIGH_TEMP = 23.5
-    MALL_LIMIT = 27000
+    ENERGY_STEP = 2.0
+    MALL_LIMIT = 17000
     WIND_TURBINE_LIMIT = 13000
     PARK_LIMIT = 11000
+    REGULATOR_LIMIT = 28000
     PLAYGROUND_LIMIT = 65000
     SOLAR_PANEL_LIMIT = 90000
 
@@ -230,6 +231,11 @@ def take_turn2(last_adjusted):
         for residence in state.residences:
             if 'Insulation' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} Insulation'
+
+    if state.funds >= REGULATOR_LIMIT:
+        for residence in state.residences:
+            if 'Regulator' not in residence.effects:
+                return f'buy_upgrade {residence.X} {residence.Y} Regulator'
 
     if state.funds >= PLAYGROUND_LIMIT:
         for residence in state.residences:
@@ -271,11 +277,11 @@ def take_turn2(last_adjusted):
             if residence.temperature < LOW_TEMP:
                 last_adjusted[(residence.X, residence.Y)] = state.turn
 
-                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in + 1.5}'
+                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in + ENERGY_STEP}'
             if residence.temperature > HIGH_TEMP:
                 last_adjusted[(residence.X, residence.Y)] = state.turn
 
-                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in - 1.5}'
+                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in - ENERGY_STEP}'
 
     if state.funds > MALL_LIMIT:
         for x, row in enumerate(state.map):
