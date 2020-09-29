@@ -47,6 +47,20 @@ def simple():
 
     play(commands)
 
+def simple2():
+    game_layer.new_game(map_name)
+    print('Starting', 'simple2 game:', game_layer.game_state.game_id)
+    game_layer.start_game()  
+
+    commands = []
+
+    last_adjusted = {}
+   
+    while game_layer.game_state.turn < game_layer.game_state.max_turns:
+        commands.append(take_turn2(last_adjusted))
+
+    play(commands)
+
 def replay(filename):
     game_layer.new_game(map_name)
     print('Starting', 'replay game:', game_layer.game_state.game_id)
@@ -134,6 +148,8 @@ def main():
             interactive()
         elif mode == 'endall':
             endall()
+        elif mode == 'simple2':
+            simple2()
         else:
             die('Unknown command')
 
@@ -203,6 +219,70 @@ def take_turn():
         print('Error: ' + error)
 
     return command
+
+
+def take_turn2(last_adjusted):
+    state = game_layer.game_state
+
+    for residence in state.residences:
+        if residence.build_progress < 100:
+            return f'build {residence.X} {residence.Y}'
+
+    if state.funds >= 7200:
+        for residence in state.residences:
+            if 'Insulation' not in residence.effects:
+                return f'buy_upgrade {residence.X} {residence.Y} Insulation'
+
+    if state.funds < 5000:
+        return 'wait'
+
+    for residence in state.residences:
+        if residence.health < 42:
+            return f'maintenance {residence.X} {residence.Y}'
+
+    if state.funds > 30000:
+        for x, row in enumerate(state.map):
+            for y, cell in enumerate(row):
+                if cell == 0:
+                    return f'place_foundation {x} {y} HighRise'
+
+    if state.funds > 10000 and len(state.residences) < 4:
+        for x, row in enumerate(state.map):
+            for y, cell in enumerate(row):
+                if cell == 0:
+                    return f'place_foundation {x} {y} ModernApartments'
+
+    for residence in state.residences:
+        if (residence.X, residence.Y) not in last_adjusted or last_adjusted[(residence.X, residence.Y)] + 5 < state.turn:
+            if residence.temperature < 18.0:
+                last_adjusted[(residence.X, residence.Y)] = state.turn
+
+                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in + 1.5}'
+            if residence.temperature > 23.5:
+                last_adjusted[(residence.X, residence.Y)] = state.turn
+
+                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in - 1.5}'
+
+    if state.funds > 28000:
+        for x, row in enumerate(state.map):
+            for y, cell in enumerate(row):
+                if cell == 0:
+                    return f'place_foundation {x} {y} Mall'
+
+    if state.funds > 14000:
+        for x, row in enumerate(state.map):
+            for y, cell in enumerate(row):
+                if cell == 0:
+                    return f'place_foundation {x} {y} WindTurbine'
+
+    if state.funds > 9000:
+        for x, row in enumerate(state.map):
+            for y, cell in enumerate(row):
+                if cell == 0:
+                    return f'place_foundation {x} {y} Park'
+
+    return 'wait'
+
 
 if __name__ == '__main__':
     main()

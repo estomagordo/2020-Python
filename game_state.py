@@ -28,11 +28,17 @@ class GameState:
         parts = []
 
         parts.append(f'Map name: {self.map_name}. Turn: {self.turn}')
+        totalpop = 0
+
+        for residence in self.residences:
+            totalpop += residence.current_pop
+
+        parts.append(f'Total population: {totalpop}\n')
         
         for row in self.map:
             parts.append(' '.join(str(num) for num in row))
 
-        parts.append(f'Funds: {self.funds}. Housing queue: {self.housing_queue}')
+        parts.append(f'\nFunds: {round(self.funds, 1)}. Housing queue: {self.housing_queue}')
         parts.append(f'Current temp: {self.current_temp}. Min temp: {self.min_temp}. Max temp: {self.max_temp}')
 
         if self.residences:
@@ -45,6 +51,15 @@ class GameState:
             for utility in self.utilities:
                 parts.append(str(utility))
 
+        available_spaces = []
+
+        for x, row in enumerate(self.map):
+            for y, cell in enumerate(row):
+                if cell == 0:
+                    available_spaces.append((x, y))
+
+        parts.append(f'Available spaces: {" ".join(str(space) for space in available_spaces)}')
+        
         return '\n'.join(parts)
 
     def update_state(self, state):
@@ -139,7 +154,7 @@ class Residence(Building):
         self.health = residence['health']
 
     def __str__(self):
-        return f'{self.building_name} ({self.X}, {self.Y})\nBuild progress: {self.build_progress}\nPopulation: {self.current_pop}\nTemperature: {self.temperature}\nRequested energy in: {self.requested_energy_in}\nHealth: {self.health}\n'
+        return f'{self.building_name} ({self.X}, {self.Y})\nBuild progress: {self.build_progress}\nPopulation: {self.current_pop}\nTemperature: {self.temperature}\nRequested energy in: {self.requested_energy_in}\nHealth: {self.health}\nUpgrades: {" ".join(u for u in self.effects)}\n'
 
 
 class Utility(Building):
