@@ -30,8 +30,6 @@ def play(commands):
 
     print('Done with game: ' + game_layer.game_state.game_id)
     print('Final score was: ' + str(game_layer.get_score()['finalScore']))
-
-    game_layer.end_game()
     
     write(filename, commands)
 
@@ -60,6 +58,7 @@ def simple2():
         command = take_turn2(last_adjusted)
         commands.append(command)
         game_layer.translate(command.split())
+        print(game_layer.game_state)
 
     play(commands)
 
@@ -196,24 +195,6 @@ def take_turn():
 
             if not healing:
                 command = game_layer.wait()
-        # elif residence.health < 50:
-        #     command = game_layer.maintenance((residence.X, residence.Y))
-        # elif residence.temperature < 18:
-        #     blueprint = game_layer.get_residence_blueprint(residence.building_name)
-        #     energy = blueprint.base_energy_need + 0.5 \
-        #              + (residence.temperature - state.current_temp) * blueprint.emissivity / 1 \
-        #              - residence.current_pop * 0.04
-        #     command =  game_layer.adjust_energy_level((residence.X, residence.Y), energy)
-        # elif residence.temperature > 24:
-        #     blueprint = game_layer.get_residence_blueprint(residence.building_name)
-        #     energy = blueprint.base_energy_need - 0.5 \
-        #              + (residence.temperature - state.current_temp) * blueprint.emissivity / 1 \
-        #              - residence.current_pop * 0.04
-        #     command = game_layer.adjust_energy_level((residence.X, residence.Y), energy)
-        # elif state.available_upgrades[0].name not in residence.effects:
-        #     command =  game_layer.buy_upgrade((residence.X, residence.Y), state.available_upgrades[0].name)
-        # else:
-        #     command = game_layer.wait()
 
     for message in game_layer.game_state.messages:
         print(message)
