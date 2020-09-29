@@ -82,7 +82,9 @@ def record():
 def interactive():
     game_layer.new_game(map_name)
     print('Starting', 'interactive game:', game_layer.game_state.game_id)
-    game_layer.start_game()  
+    game_layer.start_game()
+    print(game_layer.game_state)
+    print()
 
     commands = []
    

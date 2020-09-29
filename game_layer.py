@@ -13,8 +13,8 @@ class GameLayer:
         if command == 'wait':
             return self.wait()
 
-        pos = {'X': int(instruction[1]), 'Y': int(instruction[2])}
-
+        pos = [int(instruction[1]), int(instruction[2])]
+        
         if command == 'place_foundation':
             return self.place_foundation(pos, instruction[3])
         if command == 'build':
@@ -28,6 +28,9 @@ class GameLayer:
         return self.buy_upgrade(pos, instruction[3])
 
     def validate(self, s):
+        if not s:
+            return False
+
         instruction = s.split()
 
         command = instruction[0]

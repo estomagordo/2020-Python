@@ -35,6 +35,16 @@ class GameState:
         parts.append(f'Funds: {self.funds}. Housing queue: {self.housing_queue}')
         parts.append(f'Current temp: {self.current_temp}. Min temp: {self.min_temp}. Max temp: {self.max_temp}')
 
+        if self.residences:
+            parts.append('Residences:')
+            for residence in self.residences:
+                parts.append(str(residence))
+
+        if self.utilities:
+            parts.append('Utilities:')
+            for utility in self.utilities:
+                parts.append(str(utility))
+
         return '\n'.join(parts)
 
     def update_state(self, state):
@@ -128,7 +138,13 @@ class Residence(Building):
         self.happiness_per_tick_per_pop = residence['happinessPerTickPerPop']
         self.health = residence['health']
 
+    def __str__(self):
+        return f'{self.building_name} ({self.X}, {self.Y})\nBuild progress: {self.build_progress}\nPopulation: {self.current_pop}\nTemperature: {self.temperature}\nRequested energy in: {self.requested_energy_in}\nHealth: {self.health}\n'
+
 
 class Utility(Building):
     def __init__(self, utility):
         super().__init__(utility)
+
+    def __str__(self):
+        return f'{self.building_name} ({self.X}, {self.Y})\nBuild progress: {self.build_progress}\n'
