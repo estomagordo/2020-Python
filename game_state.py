@@ -36,12 +36,12 @@ class GameState:
         parts.append(f'Current temp: {self.current_temp}. Min temp: {self.min_temp}. Max temp: {self.max_temp}')
 
         if self.residences:
-            parts.append('Residences:')
+            parts.append('\nResidences:\n')
             for residence in self.residences:
                 parts.append(str(residence))
 
         if self.utilities:
-            parts.append('Utilities:')
+            parts.append('\nUtilities:\n')
             for utility in self.utilities:
                 parts.append(str(utility))
 
