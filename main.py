@@ -57,7 +57,9 @@ def simple2():
     last_adjusted = {}
    
     while game_layer.game_state.turn < game_layer.game_state.max_turns:
-        commands.append(take_turn2(last_adjusted))
+        command = take_turn2(last_adjusted)
+        commands.append(command)
+        game_layer.translate(command.split())
 
     play(commands)
 
