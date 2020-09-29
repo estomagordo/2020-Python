@@ -210,12 +210,15 @@ def take_turn2(last_adjusted):
     REPAIR_LIMIT = 42
     HIGHRISE_LIMIT = 26000
     MODERN_LIMIT = 11000
-    MAX_RESIDENCES = 7
+    APARTMENTS_LIMIT = 7800
+    MAX_RESIDENCES = 10
     LOW_TEMP = 18.0
     HIGH_TEMP = 23.5
     MALL_LIMIT = 27000
     WIND_TURBINE_LIMIT = 13000
-    PARK_LIMIT = 8000
+    PARK_LIMIT = 11000
+    PLAYGROUND_LIMIT = 65000
+    SOLAR_PANEL_LIMIT = 90000
 
     state = game_layer.game_state
 
@@ -227,6 +230,16 @@ def take_turn2(last_adjusted):
         for residence in state.residences:
             if 'Insulation' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} Insulation'
+
+    if state.funds >= PLAYGROUND_LIMIT:
+        for residence in state.residences:
+            if 'Playground' not in residence.effects:
+                return f'buy_upgrade {residence.X} {residence.Y} Playground'
+
+    if state.funds >= SOLAR_PANEL_LIMIT:
+        for residence in state.residences:
+            if 'SolarPanel' not in residence.effects:
+                return f'buy_upgrade {residence.X} {residence.Y} SolarPanel'
 
     if state.funds < WAITING_LIMIT:
         return 'wait'
@@ -246,6 +259,12 @@ def take_turn2(last_adjusted):
             for y, cell in enumerate(row):
                 if cell == 0:
                     return f'place_foundation {x} {y} ModernApartments'
+
+    if state.funds > APARTMENTS_LIMIT and len(state.residences) < MAX_RESIDENCES:
+        for x, row in enumerate(state.map):
+            for y, cell in enumerate(row):
+                if cell == 0:
+                    return f'place_foundation {x} {y} Apartments'
 
     for residence in state.residences:
         if (residence.X, residence.Y) not in last_adjusted or last_adjusted[(residence.X, residence.Y)] + 5 < state.turn:
