@@ -1,3 +1,4 @@
+import colorama
 import glob
 import os
 
@@ -5,6 +6,8 @@ from sys import argv
 from time import time
 
 from game_layer import GameLayer
+
+colorama.init()
 
 api_key = ''
 
@@ -95,8 +98,8 @@ def interactive():
             s = input()
 
         game_layer.translate(s.split())
+        print(colorama.ansi.clear_screen())
         print(game_layer.game_state)
-        print()
 
     play(commands)
 
