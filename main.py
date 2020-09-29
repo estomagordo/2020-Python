@@ -205,31 +205,43 @@ def take_turn():
 
 
 def take_turn2(last_adjusted):
+    INSULATION_THRESHOLD = 7200
+    WAITING_LIMIT = 3000
+    REPAIR_LIMIT = 42
+    HIGHRISE_LIMIT = 26000
+    MODERN_LIMIT = 11000
+    MAX_RESIDENCES = 7
+    LOW_TEMP = 18.0
+    HIGH_TEMP = 23.5
+    MALL_LIMIT = 27000
+    WIND_TURBINE_LIMIT = 13000
+    PARK_LIMIT = 8000
+
     state = game_layer.game_state
 
     for residence in state.residences:
         if residence.build_progress < 100:
             return f'build {residence.X} {residence.Y}'
 
-    if state.funds >= 7200:
+    if state.funds >= INSULATION_THRESHOLD:
         for residence in state.residences:
             if 'Insulation' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} Insulation'
 
-    if state.funds < 5000:
+    if state.funds < WAITING_LIMIT:
         return 'wait'
 
     for residence in state.residences:
-        if residence.health < 42:
+        if residence.health < REPAIR_LIMIT:
             return f'maintenance {residence.X} {residence.Y}'
 
-    if state.funds > 30000:
+    if state.funds > HIGHRISE_LIMIT:
         for x, row in enumerate(state.map):
             for y, cell in enumerate(row):
                 if cell == 0:
                     return f'place_foundation {x} {y} HighRise'
 
-    if state.funds > 10000 and len(state.residences) < 4:
+    if state.funds > MODERN_LIMIT and len(state.residences) < MAX_RESIDENCES:
         for x, row in enumerate(state.map):
             for y, cell in enumerate(row):
                 if cell == 0:
@@ -237,28 +249,28 @@ def take_turn2(last_adjusted):
 
     for residence in state.residences:
         if (residence.X, residence.Y) not in last_adjusted or last_adjusted[(residence.X, residence.Y)] + 5 < state.turn:
-            if residence.temperature < 18.0:
+            if residence.temperature < LOW_TEMP:
                 last_adjusted[(residence.X, residence.Y)] = state.turn
 
                 return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in + 1.5}'
-            if residence.temperature > 23.5:
+            if residence.temperature > HIGH_TEMP:
                 last_adjusted[(residence.X, residence.Y)] = state.turn
 
                 return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in - 1.5}'
 
-    if state.funds > 28000:
+    if state.funds > MALL_LIMIT:
         for x, row in enumerate(state.map):
             for y, cell in enumerate(row):
                 if cell == 0:
                     return f'place_foundation {x} {y} Mall'
 
-    if state.funds > 14000:
+    if state.funds > WIND_TURBINE_LIMIT:
         for x, row in enumerate(state.map):
             for y, cell in enumerate(row):
                 if cell == 0:
                     return f'place_foundation {x} {y} WindTurbine'
 
-    if state.funds > 9000:
+    if state.funds > PARK_LIMIT:
         for x, row in enumerate(state.map):
             for y, cell in enumerate(row):
                 if cell == 0:
