@@ -51,6 +51,11 @@ class GameState:
             for utility in self.utilities:
                 parts.append(str(utility))
 
+        parts.append(f'Available spaces: {" ".join(str(space) for space in self.available_spaces())}')
+        
+        return '\n'.join(parts)
+
+    def available_spaces(self):
         available_spaces = []
 
         for x, row in enumerate(self.map):
@@ -58,9 +63,7 @@ class GameState:
                 if cell == 0:
                     available_spaces.append((x, y))
 
-        parts.append(f'Available spaces: {" ".join(str(space) for space in available_spaces)}')
-        
-        return '\n'.join(parts)
+        return available_spaces
 
     def update_state(self, state):
         self.turn = state['turn']

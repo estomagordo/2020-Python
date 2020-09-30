@@ -6,6 +6,7 @@ from sys import argv
 from time import time
 
 from game_layer import GameLayer
+from strategy import Strategy
 
 colorama.init()
 
@@ -45,16 +46,42 @@ def simple():
     play(commands)
 
 def simple2():
+    strategy_settings = {
+        'insulation_threshold': 7200,
+        'waiting_limit': 1000,
+        'repair_limit': 42,
+        'highrise_threshold': 19000,
+        'highrise_step': 19000,
+        'modern_threshold': 9000,
+        'modern_step': 1400,
+        'apartments_threshold': 8000,
+        'apartments_step': 6000,
+        'max_residences': 11,
+        'low_temp': 18.5,
+        'high_temp': 23.5,
+        'energy_step': 2.0,
+        'mall_threshold': 27000,
+        'mall_step': 32000,
+        'wind_turbine_threshold': 13000,
+        'wind_turbine_step': 9000,
+        'park_threshold': 16000,
+        'park_step': 52000,
+        'regulator_threshold': 28000,
+        'playground_threshold': 65000,
+        'solar_panel_threshold': 90000,
+        'insulator_threshold': 29000
+    }    
+
     game_layer.new_game(map_name)
+    strategy = Strategy(game_layer.game_state, strategy_settings)
+
     print('Starting', 'simple2 game:', game_layer.game_state.game_id)
     game_layer.start_game()  
 
     commands = []
-
-    last_adjusted = {}
    
     while game_layer.game_state.turn < game_layer.game_state.max_turns:
-        command = take_turn2(last_adjusted)
+        command = take_turn2(strategy)
         commands.append(command)
         game_layer.translate(command.split())
         print(game_layer.game_state)
@@ -203,103 +230,57 @@ def take_turn():
     return command
 
 
-def take_turn2(last_adjusted):
-    INSULATION_THRESHOLD = 7200
-    WAITING_LIMIT = 1000
-    REPAIR_LIMIT = 42
-    HIGHRISE_LIMIT = 66000
-    MODERN_LIMIT = 11000
-    APARTMENTS_LIMIT = 7800
-    MAX_RESIDENCES = 10
-    LOW_TEMP = 18.5
-    HIGH_TEMP = 23.5
-    ENERGY_STEP = 2.0
-    MALL_LIMIT = 17000
-    WIND_TURBINE_LIMIT = 13000
-    PARK_LIMIT = 11000
-    REGULATOR_LIMIT = 28000
-    PLAYGROUND_LIMIT = 65000
-    SOLAR_PANEL_LIMIT = 90000
-
+def take_turn2(strategy):
     state = game_layer.game_state
 
     for residence in state.residences:
         if residence.build_progress < 100:
             return f'build {residence.X} {residence.Y}'
 
-    if state.funds >= INSULATION_THRESHOLD:
+    if state.funds >= strategy.insulation_threshold:
         for residence in state.residences:
             if 'Insulation' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} Insulation'
 
-    if state.funds >= REGULATOR_LIMIT:
+    if state.funds >= strategy.regulator_threshold:
         for residence in state.residences:
             if 'Regulator' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} Regulator'
 
-    if state.funds >= PLAYGROUND_LIMIT:
+    if state.funds >= strategy.playground_threshold:
         for residence in state.residences:
             if 'Playground' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} Playground'
 
-    if state.funds >= SOLAR_PANEL_LIMIT:
+    if state.funds >= strategy.solar_panel_threshold:
         for residence in state.residences:
             if 'SolarPanel' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} SolarPanel'
 
-    if state.funds < WAITING_LIMIT:
+    if state.funds < strategy.waiting_limit:
         return 'wait'
 
     for residence in state.residences:
-        if residence.health < REPAIR_LIMIT:
+        if residence.health < strategy.repair_limit:
             return f'maintenance {residence.X} {residence.Y}'
 
-    if state.funds > HIGHRISE_LIMIT:
-        for x, row in enumerate(state.map):
-            for y, cell in enumerate(row):
-                if cell == 0:
-                    return f'place_foundation {x} {y} HighRise'
-
-    if state.funds > MODERN_LIMIT and len(state.residences) < MAX_RESIDENCES:
-        for x, row in enumerate(state.map):
-            for y, cell in enumerate(row):
-                if cell == 0:
-                    return f'place_foundation {x} {y} ModernApartments'
-
-    if state.funds > APARTMENTS_LIMIT and len(state.residences) < MAX_RESIDENCES:
-        for x, row in enumerate(state.map):
-            for y, cell in enumerate(row):
-                if cell == 0:
-                    return f'place_foundation {x} {y} Apartments'
-
     for residence in state.residences:
-        if (residence.X, residence.Y) not in last_adjusted or last_adjusted[(residence.X, residence.Y)] + 5 < state.turn:
-            if residence.temperature < LOW_TEMP:
-                last_adjusted[(residence.X, residence.Y)] = state.turn
+        if (residence.X, residence.Y) not in strategy.energy_adjustments or strategy.energy_adjustments[(residence.X, residence.Y)] + 5 < state.turn:
+            if residence.temperature < strategy.low_temp:
+                strategy.energy_adjustments[(residence.X, residence.Y)] = state.turn
 
-                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in + ENERGY_STEP}'
-            if residence.temperature > HIGH_TEMP:
-                last_adjusted[(residence.X, residence.Y)] = state.turn
+                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in + strategy.energy_step}'
+            if residence.temperature > strategy.high_temp:
+                strategy.energy_adjustments[(residence.X, residence.Y)] = state.turn
 
-                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in - ENERGY_STEP}'
+                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in - strategy.energy_step}'
 
-    if state.funds > MALL_LIMIT:
-        for x, row in enumerate(state.map):
-            for y, cell in enumerate(row):
-                if cell == 0:
-                    return f'place_foundation {x} {y} Mall'
-
-    if state.funds > WIND_TURBINE_LIMIT:
-        for x, row in enumerate(state.map):
-            for y, cell in enumerate(row):
-                if cell == 0:
-                    return f'place_foundation {x} {y} WindTurbine'
-
-    if state.funds > PARK_LIMIT:
-        for x, row in enumerate(state.map):
-            for y, cell in enumerate(row):
-                if cell == 0:
-                    return f'place_foundation {x} {y} Park'
+    for choice in strategy.build_choice():
+        name = choice[1]
+        
+        for x, y in state.available_spaces():
+            strategy.building_counts[name] += 1
+            return f'place_foundation {x} {y} {name}'
 
     return 'wait'
 
