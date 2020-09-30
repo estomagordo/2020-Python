@@ -54,7 +54,7 @@ def simple2():
     with open('simple2.json') as f:
         strategy_settings = load(f)
 
-    games = 5
+    games = 8
 
     for game in range(games):    
         game_layer.new_game(map_name)
@@ -71,7 +71,7 @@ def simple2():
             game_layer.translate(command.split())
             # print(game_layer.game_state)
 
-        # print(game_layer.game_state)
+        print(game_layer.game_state)
         print(f'Game: {game+1}/{games}')
         play(commands)
 
