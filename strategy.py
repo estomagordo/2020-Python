@@ -9,6 +9,7 @@ class Strategy:
         self.playground_threshold = settings['playground_threshold']
         self.solar_panel_threshold = settings['solar_panel_threshold']
         self.regulator_threshold = settings['regulator_threshold']
+        self.caretaker_threshold = settings['caretaker_threshold']
         self.waiting_limit = settings['waiting_limit']
         self.repair_limit = settings['repair_limit']
         self.highrise_threshold = settings['highrise_threshold']

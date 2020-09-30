@@ -2,6 +2,7 @@ import colorama
 import glob
 import os
 
+from json import load
 from sys import argv
 from time import time
 
@@ -23,6 +24,8 @@ game_layer = GameLayer(api_key)
 def write(filename, commands):
     with open(filename, 'w') as f:
         for command in commands:
+            if command[-1] != '\n':
+                command = command + '\n'
             f.write(command)
 
 def play(commands):
@@ -46,47 +49,31 @@ def simple():
     play(commands)
 
 def simple2():
-    strategy_settings = {
-        'insulation_threshold': 7200,
-        'waiting_limit': 1000,
-        'repair_limit': 42,
-        'highrise_threshold': 19000,
-        'highrise_step': 19000,
-        'modern_threshold': 9000,
-        'modern_step': 1400,
-        'apartments_threshold': 8000,
-        'apartments_step': 6000,
-        'max_residences': 11,
-        'low_temp': 18.5,
-        'high_temp': 23.5,
-        'energy_step': 2.0,
-        'mall_threshold': 27000,
-        'mall_step': 32000,
-        'wind_turbine_threshold': 13000,
-        'wind_turbine_step': 9000,
-        'park_threshold': 16000,
-        'park_step': 52000,
-        'regulator_threshold': 28000,
-        'playground_threshold': 65000,
-        'solar_panel_threshold': 90000,
-        'insulator_threshold': 29000
-    }    
+    strategy_settings = None
 
-    game_layer.new_game(map_name)
-    strategy = Strategy(game_layer.game_state, strategy_settings)
+    with open('simple2.json') as f:
+        strategy_settings = load(f)
 
-    print('Starting', 'simple2 game:', game_layer.game_state.game_id)
-    game_layer.start_game()  
+    games = 5
 
-    commands = []
-   
-    while game_layer.game_state.turn < game_layer.game_state.max_turns:
-        command = take_turn2(strategy)
-        commands.append(command)
-        game_layer.translate(command.split())
-        print(game_layer.game_state)
+    for game in range(games):    
+        game_layer.new_game(map_name)
+        strategy = Strategy(game_layer.game_state, strategy_settings)
 
-    play(commands)
+        print('Starting', 'simple2 game:', game_layer.game_state.game_id)
+        game_layer.start_game()  
+
+        commands = []
+    
+        while game_layer.game_state.turn < game_layer.game_state.max_turns:
+            command = take_turn2(strategy)
+            commands.append(command)
+            game_layer.translate(command.split())
+            # print(game_layer.game_state)
+
+        # print(game_layer.game_state)
+        print(f'Game: {game+1}/{games}')
+        play(commands)
 
 def replay(filename):
     game_layer.new_game(map_name)
@@ -236,6 +223,15 @@ def take_turn2(strategy):
     for residence in state.residences:
         if residence.build_progress < 100:
             return f'build {residence.X} {residence.Y}'
+
+    for utility in state.utilities:
+        if utility.build_progress < 100:
+            return f'build {utility.X} {utility.Y}'
+
+    if state.funds >= strategy.caretaker_threshold:
+        for residence in state.residences:
+            if 'Caretaker' not in residence.effects:
+                return f'buy_upgrade {residence.X} {residence.Y} Caretaker'
 
     if state.funds >= strategy.insulation_threshold:
         for residence in state.residences:
