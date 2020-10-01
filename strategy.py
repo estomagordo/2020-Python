@@ -56,6 +56,12 @@ class Strategy:
 
         return sorted([b for b in (highrise, modern, apartments, cabin, environmental, luxury, park, wind_turbine, mall) if b[0] <= self.game_state.funds])
 
+    def build_place(self, name):
+        if name in ('Mall', 'Park', 'WindTurbine'):
+            return self.game_state.crowded_spaces()[0][1]
+
+        return self.game_state.crowded_spaces()[-1][1]
+    
     def should_repair(self, name):
         limit = {
             'HighRise': self.maintenance_highrise,

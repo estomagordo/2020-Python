@@ -54,7 +54,7 @@ def simple2():
     with open('simple2_map1.json') as f:
         strategy_settings = load(f)
 
-    games = 120
+    games = 8
 
     for game in range(games):    
         game_layer.new_game(map_name)
@@ -279,10 +279,14 @@ def take_turn2(strategy):
 
     for choice in strategy.build_choice():
         name = choice[1]
+
+        if not state.available_spaces():
+            break
         
-        for x, y in state.available_spaces():
-            strategy.building_counts[name] += 1
-            return f'place_foundation {x} {y} {name}'
+        x, y = strategy.build_place(name)
+        strategy.building_counts[name] += 1
+        
+        return f'place_foundation {x} {y} {name}'
 
     return 'wait'
 

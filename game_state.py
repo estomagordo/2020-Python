@@ -65,6 +65,55 @@ class GameState:
 
         return available_spaces
 
+    def get_neighbours(self, x, y):
+        neighbours = []
+
+        canmoveup = x > 0
+        canmovedown = x < len(self.map) - 1
+        canmoveleft = y > 0
+        canmoveright = y < len(self.map[0]) - 1
+
+        if canmoveup:
+            neighbours.append((x - 1, y))
+            if canmoveleft:
+                neighbours.append((x - 1, y - 1))
+            if canmoveright:
+                neighbours.append((x - 1, y + 1))
+        if canmovedown:
+            neighbours.append((x + 1, y))
+            if canmoveleft:
+                neighbours.append((x + 1, y - 1))
+            if canmoveright:
+                neighbours.append((x + 1, y + 1))
+        if canmoveleft:
+            neighbours.append((x, y - 1))
+        if canmoveright:
+            neighbours.append((x, y + 1))
+
+        return neighbours
+
+    def inrange(self, x, y, radius):
+        count = 0
+
+        for nx in range(len(self.map)):
+            for ny in range(len(self.map[nx])):
+                if nx == x and ny == y:
+                    continue
+
+                if abs(nx - x) + abs(ny - y) > radius:
+                    continue
+
+                if self.map[nx][ny] != 1:
+                    count += 1
+
+        return count
+    
+    def habitable_neighbours(self, x, y):
+        return len([neighbour for neighbour in self.get_neighbours(x, y) if self.map[neighbour[0]][neighbour[1]] != 1])
+    
+    def crowded_spaces(self):
+        return list(reversed([[self.inrange(space[0], space[1], 2), space] for space in self.available_spaces()]))    
+
     def update_state(self, state):
         self.turn = state['turn']
         self.funds = state['funds']
