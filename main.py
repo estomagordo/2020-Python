@@ -51,10 +51,10 @@ def simple():
 def simple2():
     strategy_settings = None
 
-    with open('simple2.json') as f:
+    with open('simple2_map1.json') as f:
         strategy_settings = load(f)
 
-    games = 8
+    games = 120
 
     for game in range(games):    
         game_layer.new_game(map_name)
@@ -71,7 +71,7 @@ def simple2():
             game_layer.translate(command.split())
             # print(game_layer.game_state)
 
-        print(game_layer.game_state)
+        # print(game_layer.game_state)
         print(f'Game: {game+1}/{games}')
         play(commands)
 
@@ -228,6 +228,30 @@ def take_turn2(strategy):
         if utility.build_progress < 100:
             return f'build {utility.X} {utility.Y}'
 
+    for residence in state.residences:
+        if residence.health < strategy.repair_limit and strategy.should_repair(residence.building_name):
+            return f'maintenance {residence.X} {residence.Y}'
+
+    for residence in state.residences:
+        if (residence.X, residence.Y) not in strategy.energy_adjustments or strategy.energy_adjustments[(residence.X, residence.Y)] + 5 < state.turn:
+            if residence.temperature < strategy.low_temp:
+                strategy.energy_adjustments[(residence.X, residence.Y)] = state.turn
+
+                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in + strategy.energy_upstep}'
+            if residence.temperature > strategy.high_temp:
+                strategy.energy_adjustments[(residence.X, residence.Y)] = state.turn
+
+                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in - strategy.energy_downstep}'
+
+    if state.funds >= strategy.charger_threshold:
+        for residence in state.residences:
+            if 'Charger' not in residence.effects:
+                for utility in state.utilities:
+                    if utility.building_name != 'Mall':
+                        continue
+                    if abs(residence.X - utility.X) + abs(residence.Y - utility.Y) <= 3:
+                        return f'buy_upgrade {residence.X} {residence.Y} Charger'
+
     if state.funds >= strategy.caretaker_threshold:
         for residence in state.residences:
             if 'Caretaker' not in residence.effects:
@@ -252,24 +276,6 @@ def take_turn2(strategy):
         for residence in state.residences:
             if 'SolarPanel' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} SolarPanel'
-
-    if state.funds < strategy.waiting_limit:
-        return 'wait'
-
-    for residence in state.residences:
-        if residence.health < strategy.repair_limit:
-            return f'maintenance {residence.X} {residence.Y}'
-
-    for residence in state.residences:
-        if (residence.X, residence.Y) not in strategy.energy_adjustments or strategy.energy_adjustments[(residence.X, residence.Y)] + 5 < state.turn:
-            if residence.temperature < strategy.low_temp:
-                strategy.energy_adjustments[(residence.X, residence.Y)] = state.turn
-
-                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in + strategy.energy_step}'
-            if residence.temperature > strategy.high_temp:
-                strategy.energy_adjustments[(residence.X, residence.Y)] = state.turn
-
-                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in - strategy.energy_step}'
 
     for choice in strategy.build_choice():
         name = choice[1]
