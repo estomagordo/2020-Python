@@ -76,7 +76,7 @@ class GameLayer:
         position = {'X': pos[0], 'Y': pos[1]}
         foundation = {'Position': position, 'BuildingName': building_name}
 
-        self.game_state.map[pos[0]][pos[1]] = 2
+        self.game_state.map[pos[0]][pos[1]] = 1
         self.game_state.update_state(self.api.place_foundation(foundation, self.game_state.game_id))
 
         return f'place_foundation {pos[0]} {pos[1]} {building_name}\n'

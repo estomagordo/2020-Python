@@ -61,7 +61,13 @@ def simple2():
         strategy = Strategy(game_layer.game_state, strategy_settings)
 
         print('Starting', 'simple2 game:', game_layer.game_state.game_id)
-        game_layer.start_game()  
+        game_layer.start_game()
+
+        for residence in game_layer.game_state.residences:
+            game_layer.game_state.map[residence.X][residence.Y] = 1
+
+        for utility in game_layer.game_state.utilities:
+            game_layer.game_state.map[utility.X][utility.Y] = 1
 
         commands = []
     
