@@ -11,6 +11,7 @@ class GameState:
         self.available_utility_buildings = list(map(BlueprintUtilityBuilding, map_values['availableUtilityBuildings']))
         self.available_upgrades = list(map(Upgrade, map_values['availableUpgrades']))
         self.effects = list(map(Effect, map_values['effects']))
+        self.releases = {b.building_name: b.release_tick for b in (self.available_residence_buildings + self.available_utility_buildings)}
 
         self.turn = 0
         self.funds = 0
@@ -112,7 +113,7 @@ class GameState:
         return len([neighbour for neighbour in self.get_neighbours(x, y) if self.map[neighbour[0]][neighbour[1]] != 1])
     
     def crowded_spaces(self):
-        return list(reversed([[self.inrange(space[0], space[1], 2), space] for space in self.available_spaces()]))    
+        return list(sorted([[self.inrange(space[0], space[1], 2), space] for space in self.available_spaces()], reverse=True))    
 
     def update_state(self, state):
         self.turn = state['turn']

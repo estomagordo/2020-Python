@@ -2,9 +2,9 @@ import colorama
 import glob
 import os
 
+from datetime import datetime
 from json import load
 from sys import argv
-from time import time
 
 from game_layer import GameLayer
 from strategy import Strategy
@@ -16,10 +16,9 @@ api_key = ''
 with open('super.secret') as f:
     api_key = f.readline().rstrip()
 
-map_name = 'training1'
+map_name = 'training'
 
 game_layer = GameLayer(api_key)
-
 
 def write(filename, commands):
     with open(filename, 'w') as f:
@@ -29,7 +28,8 @@ def write(filename, commands):
             f.write(command)
 
 def play(commands):
-    filename = f'games\\{map_name}-{str(time()).split(".")[0]}'  
+    timestring = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    filename = f'games\\{map_name}-{timestring}-{game_layer.game_state.game_id}.dump'  
 
     print('Done with game: ' + game_layer.game_state.game_id)
     print('Final score was: ' + str(game_layer.get_score()['finalScore']))
@@ -50,11 +50,11 @@ def simple():
 
 def simple2():
     strategy_settings = None
-
-    with open('simple2_map1.json') as f:
+    
+    with open(f'simple2_{map_name}.json') as f:
         strategy_settings = load(f)
 
-    games = 8
+    games = 30
 
     for game in range(games):    
         game_layer.new_game(map_name)
@@ -142,10 +142,21 @@ def endall():
             print('Ended', game['gameId'])
 
 def main():
+    global map_name
+
     if len(argv) < 2:
         die('Supply command!')
-    else:
-        mode = argv[1]
+        return
+
+    mode = argv[1]
+
+    if mode == 'endall':
+            endall()
+    elif len(argv) == 2:
+        die('Supply map number!')
+    else:        
+        map_number = argv[2]
+        map_name += map_number
 
         if mode == 'simple':
             simple()
@@ -159,9 +170,7 @@ def main():
         elif mode == 'record':
             record()
         elif mode == 'interactive':
-            interactive()
-        elif mode == 'endall':
-            endall()
+            interactive()        
         elif mode == 'simple2':
             simple2()
         else:
@@ -279,6 +288,12 @@ def take_turn2(strategy):
 
     for choice in strategy.build_choice():
         name = choice[1]
+
+        if len(state.residences) == strategy.max_residences and name not in ('Mall', 'Park', 'WindTurbine'):
+            continue
+
+        if name not in state.releases or state.releases[name] > state.turn:
+            continue
 
         if not state.available_spaces():
             break
