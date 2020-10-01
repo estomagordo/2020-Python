@@ -54,7 +54,7 @@ def simple2():
     with open(f'simple2_{map_name}.json') as f:
         strategy_settings = load(f)
 
-    games = 30
+    games = 200
 
     for game in range(games):    
         game_layer.new_game(map_name)
@@ -286,22 +286,28 @@ def take_turn2(strategy):
             if 'SolarPanel' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} SolarPanel'
 
-    for choice in strategy.build_choice():
-        name = choice[1]
+    if state.funds >= strategy.purchase_threshold:
+        for _, cost, name in strategy.build_choice():
+            if cost > state.funds:
+                break
 
-        if len(state.residences) == strategy.max_residences and name not in ('Mall', 'Park', 'WindTurbine'):
-            continue
+            if len(state.residences) == strategy.max_residences and name not in ('Mall', 'Park', 'WindTurbine'):
+                continue
 
-        if name not in state.releases or state.releases[name] > state.turn:
-            continue
+            if name not in state.releases or state.releases[name] > state.turn:
+                continue
 
-        if not state.available_spaces():
-            break
-        
-        x, y = strategy.build_place(name)
-        strategy.building_counts[name] += 1
-        
-        return f'place_foundation {x} {y} {name}'
+            if not state.available_spaces():
+                break
+            
+            x, y = strategy.build_place(name)
+
+            if x == -1:
+                continue
+
+            strategy.building_counts[name] += 1
+            
+            return f'place_foundation {x} {y} {name}'
 
     return 'wait'
 

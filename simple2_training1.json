@@ -36,5 +36,9 @@
     "maintenance_modern": 1050,
     "maintenance_cabin": 450,
     "maintenance_luxury": 950,
-    "maintenance_environmental": 950
+    "maintenance_environmental": 950,
+    "purchase_threshold": 7000,
+    "max_malls": 2,
+    "max_wind_mills": 4,
+    "max_parks": 5
 }  

@@ -42,25 +42,47 @@ class Strategy:
         self.maintenance_cabin = settings['maintenance_cabin']
         self.maintenance_luxury = settings['maintenance_luxury']
         self.maintenance_environmental = settings['maintenance_environmental']
+        self.purchase_threshold = settings['purchase_threshold']
+        self.max_malls = settings['max_malls']
+        self.max_wind_mills = settings['max_wind_mills']
+        self.max_parks = settings['max_parks']
+
+        self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
 
     def build_choice(self):
-        highrise = (self.highrise_threshold + self.highrise_step * (0 if self.game_state.turn > 665 else self.building_counts['HighRise']), 'HighRise')
-        modern = (self.modern_threshold + self.modern_step * (0 if self.game_state.turn > 665 else self.building_counts['ModernApartments']), 'ModernApartments')
-        apartments = (self.apartments_threshold + self.apartments_step * (0 if self.game_state.turn > 665 else self.building_counts['Apartments']), 'Apartments')
-        cabin = (self.cabin_threshold + self.cabin_step * (0 if self.game_state.turn > 665 else self.building_counts['Cabin']), 'Cabin')
-        environmental = (self.environmental_threshold + (0 if self.game_state.turn > 665 else self.environmental_step * self.building_counts['EnvironmentalHouse']), 'EnvironmentalHouse')
-        luxury = (self.luxury_threshold + self.luxury_step * (0 if self.game_state.turn > 665 else self.building_counts['LuxuryResidence']), 'LuxuryResidence')
-        park = (self.park_threshold + self.park_step * (0 if self.game_state.turn > 665 else self.building_counts['Park']), 'Park')
-        wind_turbine = (self.wind_turbine_threshold + (0 if self.game_state.turn > 665 else self.wind_turbine_step * self.building_counts['WindTurbine']), 'WindTurbine')
-        mall = (self.mall_threshold + self.mall_step * (0 if self.game_state.turn > 665 else self.building_counts['Mall']), 'Mall')
+        highrise = (self.highrise_threshold + self.highrise_step * (0 if self.game_state.turn > 665 else self.building_counts['HighRise']), 18000, 'HighRise')
+        modern = (self.modern_threshold + self.modern_step * (0 if self.game_state.turn > 665 else self.building_counts['ModernApartments']), 7100, 'ModernApartments')
+        apartments = (self.apartments_threshold + self.apartments_step * (0 if self.game_state.turn > 665 else self.building_counts['Apartments']), 5200, 'Apartments')
+        cabin = (self.cabin_threshold + self.cabin_step * (0 if self.game_state.turn > 665 else self.building_counts['Cabin']), 2500, 'Cabin')
+        environmental = (self.environmental_threshold + (0 if self.game_state.turn > 665 else self.environmental_step * self.building_counts['EnvironmentalHouse']), 9000, 'EnvironmentalHouse')
+        luxury = (self.luxury_threshold + self.luxury_step * (0 if self.game_state.turn > 665 else self.building_counts['LuxuryResidence']), 3400, 'LuxuryResidence')
+        park = (self.park_threshold + self.park_step * (0 if self.game_state.turn > 665 else self.building_counts['Park']), 3750, 'Park')
+        wind_turbine = (self.wind_turbine_threshold + (0 if self.game_state.turn > 665 else self.wind_turbine_step * self.building_counts['WindTurbine']), 7500, 'WindTurbine')
+        mall = (self.mall_threshold + self.mall_step * (0 if self.game_state.turn > 665 else self.building_counts['Mall']), 16000, 'Mall')
 
-        return sorted([b for b in (highrise, modern, apartments, cabin, environmental, luxury, park, wind_turbine, mall) if b[0] <= self.game_state.funds])
+        return sorted([b for b in (highrise, modern, apartments, cabin, environmental, luxury, park, wind_turbine, mall)])
 
     def build_place(self, name):
-        if name == 'Mall' or len(self.game_state.crowded_spaces()) == 1:
-            return self.game_state.crowded_spaces()[0][1]
+        if name == 'Mall':
+            for x, y in self.mall_spaces:
+                if self.game_state.map[x][y] == 0:
+                    return x, y
 
-        return self.game_state.crowded_spaces()[1][1]
+        if name == 'WindMill':
+            for x, y in self.wind_turbine_spaces:
+                if self.game_state.map[x][y] == 0:
+                    return x, y
+
+        if name == 'Park':
+            for x, y in self.park_spaces:
+                if self.game_state.map[x][y] == 0:
+                    return x, y
+
+        for x, y in self.housing_spaces:
+            if self.game_state.map[x][y] == 0:
+                return x, y
+
+        return -1, -1
     
     def should_repair(self, name):
         limit = {
@@ -73,3 +95,52 @@ class Strategy:
         }
 
         return self.game_state.funds >= limit[name]
+
+    def inrange(self, x, y, radius):
+        count = 0
+
+        for nx in range(len(self.game_state.map)):
+            for ny in range(len(self.game_state.map[nx])):
+                if nx == x and ny == y:
+                    continue
+
+                if abs(nx - x) + abs(ny - y) > radius:
+                    continue
+
+                if self.game_state.map[nx][ny] != 1:
+                    count += 1
+
+        return count
+
+    def divide_spaces(self):
+        spaces = set(self.game_state.available_spaces())
+
+        housing_spaces = [] 
+        mall_spaces = []
+        wind_mill_spaces = []
+        park_spaces = []
+
+        radius3 = sorted([pair for pair in spaces], key=lambda pair: -self.inrange(pair[0], pair[1], 3))
+        radius2 = sorted([pair for pair in spaces], key=lambda pair: -self.inrange(pair[0], pair[1], 2))
+        
+        for x in range(self.max_malls):
+            spaces.remove(radius3[x])
+            mall_spaces.append(radius3[x])
+
+        for x in range(self.max_wind_mills):
+            if radius2[x] not in spaces:
+                continue
+            spaces.remove(radius2[x])
+            wind_mill_spaces.append(radius2[x])
+
+        for x in range(self.max_parks):
+            if radius2[x] not in spaces:
+                continue
+            spaces.remove(radius2[x])
+            park_spaces.append(radius2[x])
+
+        for pair in radius3:
+            if pair in spaces:
+                housing_spaces.append(pair)
+
+        return mall_spaces, wind_mill_spaces, park_spaces, housing_spaces
