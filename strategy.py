@@ -61,6 +61,8 @@ class Strategy:
         self.mall_weight = settings['mall_weight']
         self.wind_turbine_weight = settings['wind_turbine_weight']
         self.park_weight = settings['park_weight']
+        self.residence_weight = settings['residence_weight']
+        self.residence_weight_length = settings['residence_weight_length']
         
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
 
@@ -185,6 +187,10 @@ class Strategy:
                     if abs(x - utility.X) + abs(y - utility.Y) <= 2:
                         weight += self.mall_weight if utility.building_name == 'Mall' else self.wind_turbine_weight if utility.building_name == 'WindTurbine' else self.park_weight
 
+                for residence in self.game_state.residences:
+                    if abs(x - residence.X) + abs(y - residence.Y) <= self.residence_weight_length:
+                        weight += self.residence_weight
+                
                 if weight > best[0]:
                     best = [weight, x, y]
 

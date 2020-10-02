@@ -54,5 +54,7 @@
     "temp_diff_freakout_factor": 2.0,
     "mall_weight": 5,
     "wind_turbine_weight": 2,
-    "park_weight": 1
+    "park_weight": 1,
+    "residence_weight": 1,
+    "residence_weight_length": 2
 }  
