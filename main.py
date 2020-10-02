@@ -263,7 +263,7 @@ def take_turn2(strategy):
                 for utility in state.utilities:
                     if utility.building_name != 'Mall':
                         continue
-                    if abs(residence.X - utility.X) + abs(residence.Y - utility.Y) <= 3:
+                    if 2 <= abs(residence.X - utility.X) + abs(residence.Y - utility.Y) <= 3:
                         return f'buy_upgrade {residence.X} {residence.Y} Charger'
 
     if state.funds >= strategy.caretaker_threshold():
