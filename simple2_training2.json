@@ -39,7 +39,7 @@
     "maintenance_environmental": 950,
     "purchase_threshold": 7000,
     "max_malls": 2,
-    "max_wind_mills": 4,
+    "max_wind_turbines": 4,
     "max_parks": 5,
     "lower_upgrade_threshold": 660,
     "lower_regulator_threshold": 2000   ,

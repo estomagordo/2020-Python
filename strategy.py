@@ -45,7 +45,7 @@ class Strategy:
         self.maintenance_environmental = settings['maintenance_environmental']
         self.purchase_threshold = settings['purchase_threshold']
         self.max_malls = settings['max_malls']
-        self.max_wind_mills = settings['max_wind_mills']
+        self.max_wind_turbines = settings['max_wind_turbines']
         self.max_parks = settings['max_parks']
         self.lower_upgrade_threshold = settings['lower_upgrade_threshold']
         self.lower_insulation_threshold = settings['lower_insulation_threshold']
@@ -90,7 +90,7 @@ class Strategy:
         if self.building_counts['Park'] < self.max_parks:
             choices.append(park)
 
-        if self.building_counts['WindTurbine'] < self.max_wind_mills:
+        if self.building_counts['WindTurbine'] < self.max_wind_turbines:
             choices.append(wind_turbine)
 
         if self.building_counts['Mall'] < self.max_malls:
@@ -153,7 +153,7 @@ class Strategy:
 
             return best[1:]
 
-        if name in ('WindMill', 'Park'):
+        if name in ('WindTurbine', 'Park'):
             best = [-1, -1, -1]
 
             for x, row in enumerate(self.game_state.map):
@@ -183,7 +183,7 @@ class Strategy:
 
                 for utility in self.game_state.utilities:
                     if abs(x - utility.X) + abs(y - utility.Y) <= 2:
-                        weight += self.mall_weight if utility.building_name == 'Mall' else self.wind_turbine_weight if utility.building_name == 'WindMill' else self.park_weight
+                        weight += self.mall_weight if utility.building_name == 'Mall' else self.wind_turbine_weight if utility.building_name == 'WindTurbine' else self.park_weight
 
                 if weight > best[0]:
                     best = [weight, x, y]
@@ -258,7 +258,7 @@ class Strategy:
 
         housing_spaces = [] 
         mall_spaces = []
-        wind_mill_spaces = []
+        wind_turbine_spaces = []
         park_spaces = []
 
         radius3 = sorted([pair for pair in spaces], key=lambda pair: -self.inrange(pair[0], pair[1], 3))
@@ -268,11 +268,11 @@ class Strategy:
             spaces.remove(radius3[x])
             mall_spaces.append(radius3[x])
 
-        for x in range(self.max_wind_mills):
+        for x in range(self.max_wind_turbines):
             if radius2[x] not in spaces:
                 continue
             spaces.remove(radius2[x])
-            wind_mill_spaces.append(radius2[x])
+            wind_turbine_spaces.append(radius2[x])
 
         for x in range(self.max_parks):
             if radius2[x] not in spaces:
@@ -284,4 +284,4 @@ class Strategy:
             if pair in spaces:
                 housing_spaces.append(pair)
 
-        return mall_spaces, wind_mill_spaces, park_spaces, housing_spaces
+        return mall_spaces, wind_turbine_spaces, park_spaces, housing_spaces
