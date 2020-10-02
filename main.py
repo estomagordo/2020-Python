@@ -247,16 +247,13 @@ def take_turn2(strategy):
         if residence.health < strategy.repair_limit and strategy.should_repair(residence.building_name):
             return f'maintenance {residence.X} {residence.Y}'
 
-    for residence in state.residences:
-        if (residence.X, residence.Y) not in strategy.energy_adjustments or strategy.energy_adjustments[(residence.X, residence.Y)] + 5 < state.turn:
-            if residence.temperature < strategy.low_temp:
-                strategy.energy_adjustments[(residence.X, residence.Y)] = state.turn
+    diff, adjx, adjy, high, requested = strategy.most_urgent_energy_changee()
 
-                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in + strategy.energy_upstep}'
-            if residence.temperature > strategy.high_temp:
-                strategy.energy_adjustments[(residence.X, residence.Y)] = state.turn
-
-                return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in - strategy.energy_downstep}'
+    if adjx > -1:
+        strategy.energy_adjustments[(adjx, adjy)] = state.turn
+        if high:
+            return f'adjust_energy_level {adjx} {adjy} {requested - strategy.lower_energy(diff)}'
+        return f'adjust_energy_level {adjx} {adjy} {requested + strategy.increase_energy(diff)}'
 
     if state.funds >= strategy.charger_threshold():
         for residence in state.residences:

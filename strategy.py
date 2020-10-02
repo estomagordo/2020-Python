@@ -3,8 +3,9 @@ from collections import defaultdict
 class Strategy:
     def __init__(self, game_state, settings):
         self.game_state = game_state
-        self.energy_adjustments = {}
+        self.energy_adjustments = defaultdict(int)
         self.building_counts = defaultdict(int)
+
         self.insulation_base_threshold = settings['insulation_threshold']
         self.playground_base_threshold = settings['playground_threshold']
         self.solar_panel_base_threshold = settings['solar_panel_threshold']
@@ -54,6 +55,9 @@ class Strategy:
         self.lower_caretaker_threshold = settings['lower_caretaker_threshold']
         self.lower_charger_threshold = settings['lower_charger_threshold']
         self.highrise_limit = settings['highrise_limit']
+        self.energy_change_cooldown = settings['energy_change_cooldown']
+        self.temp_diff_freakout_cutoff = settings['temp_diff_freakout_cutoff']
+        self.temp_diff_freakout_factor = settings['temp_diff_freakout_factor']
 
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
 
@@ -155,6 +159,33 @@ class Strategy:
                     count += 1
 
         return count
+
+    def most_urgent_energy_changee(self):
+        candidates = []
+
+        for residence in self.game_state.residences:
+            if self.energy_adjustments[(residence.X, residence.Y)] + self.energy_change_cooldown > self.game_state.turn:
+                continue
+            if self.low_temp <= residence.temperature <= self.high_temp:
+                continue
+            candidates.append((abs(21.0 - residence.temperature), residence.X, residence.Y, residence.temperature > self.high_temp, residence.requested_energy_in))
+
+        if not candidates:
+            return -1, -1, -1, False, -1.0
+
+        candidates.sort(reverse=True)
+
+        return candidates[0]
+
+    def lower_energy(self, diff):
+        factor = self.temp_diff_freakout_factor if diff > self.temp_diff_freakout_cutoff else 1.0
+
+        return factor * self.energy_downstep
+
+    def increase_energy(self, diff):
+        factor = self.temp_diff_freakout_factor if diff > self.temp_diff_freakout_cutoff else 1.0
+
+        return factor * self.energy_upstep
 
     def divide_spaces(self):
         spaces = set(self.game_state.available_spaces())

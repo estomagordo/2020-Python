@@ -48,5 +48,8 @@
     "lower_insulation_threshold": 9000,
     "lower_caretaker_threshold": 17000,
     "lower_charger_threshold": 5000,
-    "highrise_limit": 6
+    "highrise_limit": 6,
+    "energy_change_cooldown": 7,
+    "temp_diff_freakout_cutoff": 6.0,
+    "temp_diff_freakout_factor": 1.1
 }  
