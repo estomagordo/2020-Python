@@ -115,9 +115,22 @@ class Strategy:
     
     def build_place(self, name):
         if name == 'Mall':
+            best = [-1, -1, -1]
+
             for x, y in self.mall_spaces:
-                if self.game_state.map[x][y] == 0:
-                    return x, y
+                if self.game_state.map[x][y] != 0:
+                    continue
+
+                count = 0
+
+                for residence in self.game_state.residences:
+                    if abs(x - residence.X) + abs(y - residence.Y) <= 3:
+                        count += 1
+
+                if count > best[0]:
+                    best = [count, x, y]
+
+            return best[1:]
 
         if name in ('WindMill', 'Park'):
             best = [-1, -1, -1]
