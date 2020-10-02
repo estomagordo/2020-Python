@@ -310,12 +310,6 @@ def take_turn2(strategy):
             strategy.building_counts[name] += 1
             
             return f'place_foundation {x} {y} {name}'
-
-    for residence in state.residences:
-        if state.turn > 550 and residence.temperature > 21.5:
-            strategy.energy_adjustments[(residence.X, residence.Y)] = state.turn
-
-            return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in - strategy.energy_downstep}'
     
     return 'wait'
 
