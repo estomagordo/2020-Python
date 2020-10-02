@@ -58,10 +58,10 @@ def simple2():
 
     for game in range(games):    
         game_layer.new_game(map_name)
-        strategy = Strategy(game_layer.game_state, strategy_settings)
 
         print('Starting', 'simple2 game:', game_layer.game_state.game_id)
         game_layer.start_game()
+        strategy = Strategy(game_layer.game_state, strategy_settings)
 
         for residence in game_layer.game_state.residences:
             game_layer.game_state.map[residence.X][residence.Y] = 1
