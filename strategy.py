@@ -158,41 +158,33 @@ class Strategy:
         if name in ('WindTurbine', 'Park'):
             best = [-1, -1, -1]
 
-            for x, row in enumerate(self.game_state.map):
-                for y, cell in enumerate(row):
-                    if (x, y) in self.mall_spaces or cell != 0:
-                        continue
-                    
-                    count = 0
+            for x, y in self.game_state.available_spaces():
+                count = 0
 
-                    for residence in self.game_state.residences:
-                        if abs(x - residence.X) + abs(y - residence.Y) <= 2:
-                            count += 1
+                for residence in self.game_state.residences:
+                    if abs(x - residence.X) + abs(y - residence.Y) <= 2:
+                        count += 1
 
-                    if count > best[0]:
-                        best = [count, x, y]
+                if count > best[0]:
+                    best = [count, x, y]
 
             return best[1:]
 
         best = [-1, -1, -1]
 
-        for x, row in enumerate(self.game_state.map):
-            for y, cell in enumerate(row):
-                if (x, y) in self.mall_spaces or cell != 0:
-                    continue
-                
-                weight = 0
+        for x, y in self.game_state.available_spaces():                
+            weight = 0
 
-                for utility in self.game_state.utilities:
-                    if abs(x - utility.X) + abs(y - utility.Y) <= 2:
-                        weight += self.mall_weight if utility.building_name == 'Mall' else self.wind_turbine_weight if utility.building_name == 'WindTurbine' else self.park_weight
+            for utility in self.game_state.utilities:
+                if abs(x - utility.X) + abs(y - utility.Y) <= 2:
+                    weight += self.mall_weight if utility.building_name == 'Mall' else self.wind_turbine_weight if utility.building_name == 'WindTurbine' else self.park_weight
 
-                for residence in self.game_state.residences:
-                    if abs(x - residence.X) + abs(y - residence.Y) <= self.residence_weight_length:
-                        weight += self.residence_weight
-                
-                if weight > best[0]:
-                    best = [weight, x, y]
+            for residence in self.game_state.residences:
+                if abs(x - residence.X) + abs(y - residence.Y) <= self.residence_weight_length:
+                    weight += self.residence_weight
+            
+            if weight > best[0]:
+                best = [weight, x, y]
 
         return best[1:]
     
