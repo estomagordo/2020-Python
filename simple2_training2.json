@@ -40,5 +40,12 @@
     "purchase_threshold": 7000,
     "max_malls": 2,
     "max_wind_mills": 4,
-    "max_parks": 5
+    "max_parks": 5,
+    "lower_upgrade_threshold": 660,
+    "lower_regulator_threshold": 2000   ,
+    "lower_playground_threshold": 6000,
+    "lower_solar_panel_threshold": 8000,
+    "lower_insulation_threshold": 9000,
+    "lower_caretaker_threshold": 17000,
+    "lower_charger_threshold": 5000
 }  

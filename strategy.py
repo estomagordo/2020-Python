@@ -5,12 +5,12 @@ class Strategy:
         self.game_state = game_state
         self.energy_adjustments = {}
         self.building_counts = defaultdict(int)
-        self.insulation_threshold = settings['insulation_threshold']
-        self.playground_threshold = settings['playground_threshold']
-        self.solar_panel_threshold = settings['solar_panel_threshold']
-        self.regulator_threshold = settings['regulator_threshold']
-        self.caretaker_threshold = settings['caretaker_threshold']
-        self.charger_threshold = settings['charger_threshold']
+        self.insulation_base_threshold = settings['insulation_threshold']
+        self.playground_base_threshold = settings['playground_threshold']
+        self.solar_panel_base_threshold = settings['solar_panel_threshold']
+        self.regulator_base_threshold = settings['regulator_threshold']
+        self.caretaker_base_threshold = settings['caretaker_threshold']
+        self.charger_base_threshold = settings['charger_threshold']
         self.waiting_limit = settings['waiting_limit']
         self.repair_limit = settings['repair_limit']
         self.highrise_threshold = settings['highrise_threshold']
@@ -46,6 +46,13 @@ class Strategy:
         self.max_malls = settings['max_malls']
         self.max_wind_mills = settings['max_wind_mills']
         self.max_parks = settings['max_parks']
+        self.lower_upgrade_threshold = settings['lower_upgrade_threshold']
+        self.lower_insulation_threshold = settings['lower_insulation_threshold']
+        self.lower_playground_threshold = settings['lower_playground_threshold']
+        self.lower_solar_panel_threshold = settings['lower_solar_panel_threshold']
+        self.lower_regulator_threshold = settings['lower_regulator_threshold']
+        self.lower_caretaker_threshold = settings['lower_caretaker_threshold']
+        self.lower_charger_threshold = settings['lower_charger_threshold']
 
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
 
@@ -62,6 +69,42 @@ class Strategy:
 
         return sorted([b for b in (highrise, modern, apartments, cabin, environmental, luxury, park, wind_turbine, mall)])
 
+    def charger_threshold(self):
+        if self.game_state.turn >= self.lower_upgrade_threshold:
+            return self.lower_charger_threshold
+
+        return self.charger_base_threshold
+
+    def caretaker_threshold(self):
+        if self.game_state.turn >= self.lower_upgrade_threshold:
+            return self.lower_caretaker_threshold
+
+        return self.caretaker_base_threshold
+
+    def insulation_threshold(self):
+        if self.game_state.turn >= self.lower_upgrade_threshold:
+            return self.lower_insulation_threshold
+
+        return self.insulation_base_threshold
+
+    def regulator_threshold(self):
+        if self.game_state.turn >= self.lower_upgrade_threshold:
+            return self.lower_regulator_threshold
+
+        return self.regulator_base_threshold
+
+    def playground_threshold(self):
+        if self.game_state.turn >= self.lower_upgrade_threshold:
+            return self.lower_playground_threshold
+
+        return self.playground_base_threshold
+
+    def solar_panel_threshold(self):
+        if self.game_state.turn >= self.lower_upgrade_threshold:
+            return self.lower_solar_panel_threshold
+
+        return self.solar_panel_base_threshold
+    
     def build_place(self, name):
         if name == 'Mall':
             for x, y in self.mall_spaces:

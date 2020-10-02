@@ -54,7 +54,7 @@ def simple2():
     with open(f'simple2_{map_name}.json') as f:
         strategy_settings = load(f)
 
-    games = 200
+    games = 20
 
     for game in range(games):    
         game_layer.new_game(map_name)
@@ -258,7 +258,7 @@ def take_turn2(strategy):
 
                 return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in - strategy.energy_downstep}'
 
-    if state.funds >= strategy.charger_threshold:
+    if state.funds >= strategy.charger_threshold():
         for residence in state.residences:
             if 'Charger' not in residence.effects:
                 for utility in state.utilities:
@@ -267,27 +267,27 @@ def take_turn2(strategy):
                     if abs(residence.X - utility.X) + abs(residence.Y - utility.Y) <= 3:
                         return f'buy_upgrade {residence.X} {residence.Y} Charger'
 
-    if state.funds >= strategy.caretaker_threshold:
+    if state.funds >= strategy.caretaker_threshold():
         for residence in state.residences:
             if 'Caretaker' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} Caretaker'
 
-    if state.funds >= strategy.insulation_threshold:
+    if state.funds >= strategy.insulation_threshold():
         for residence in state.residences:
             if 'Insulation' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} Insulation'
 
-    if state.funds >= strategy.regulator_threshold:
+    if state.funds >= strategy.regulator_threshold():
         for residence in state.residences:
             if 'Regulator' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} Regulator'
 
-    if state.funds >= strategy.playground_threshold:
+    if state.funds >= strategy.playground_threshold():
         for residence in state.residences:
             if 'Playground' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} Playground'
 
-    if state.funds >= strategy.solar_panel_threshold:
+    if state.funds >= strategy.solar_panel_threshold():
         for residence in state.residences:
             if 'SolarPanel' not in residence.effects:
                 return f'buy_upgrade {residence.X} {residence.Y} SolarPanel'
