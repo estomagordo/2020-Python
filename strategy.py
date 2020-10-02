@@ -53,6 +53,7 @@ class Strategy:
         self.lower_regulator_threshold = settings['lower_regulator_threshold']
         self.lower_caretaker_threshold = settings['lower_caretaker_threshold']
         self.lower_charger_threshold = settings['lower_charger_threshold']
+        self.highrise_limit = settings['highrise_limit']
 
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
 

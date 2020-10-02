@@ -54,7 +54,7 @@ def simple2():
     with open(f'simple2_{map_name}.json') as f:
         strategy_settings = load(f)
 
-    games = 20
+    games = 200
 
     for game in range(games):    
         game_layer.new_game(map_name)
@@ -303,6 +303,9 @@ def take_turn2(strategy):
             if name not in state.releases or state.releases[name] > state.turn:
                 continue
 
+            if name == 'HighRise' and strategy.building_counts[name] == strategy.highrise_limit:
+                continue
+
             if not state.available_spaces():
                 break
             
@@ -315,6 +318,12 @@ def take_turn2(strategy):
             
             return f'place_foundation {x} {y} {name}'
 
+    for residence in state.residences:
+        if state.turn > 550 and residence.temperature > 21.5:
+            strategy.energy_adjustments[(residence.X, residence.Y)] = state.turn
+
+            return f'adjust_energy_level {residence.X} {residence.Y} {residence.requested_energy_in - strategy.energy_downstep}'
+    
     return 'wait'
 
 

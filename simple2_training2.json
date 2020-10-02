@@ -47,5 +47,6 @@
     "lower_solar_panel_threshold": 8000,
     "lower_insulation_threshold": 9000,
     "lower_caretaker_threshold": 17000,
-    "lower_charger_threshold": 5000
+    "lower_charger_threshold": 5000,
+    "highrise_limit": 6
 }  
