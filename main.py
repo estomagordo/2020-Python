@@ -158,9 +158,9 @@ def main():
 
     mode = argv[1]
 
-    if mode == 'endall':
-            endall()
-    elif len(argv) == 2:
+    endall()
+
+    if len(argv) == 2:
         die('Supply map number!')
     else:        
         map_number = argv[2]
