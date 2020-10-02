@@ -51,5 +51,8 @@
     "highrise_limit": 5,
     "energy_change_cooldown": 5,
     "temp_diff_freakout_cutoff": 4.0,
-    "temp_diff_freakout_factor": 2.0
+    "temp_diff_freakout_factor": 2.0,
+    "mall_weight": 5,
+    "wind_turbine_weight": 2,
+    "park_weight": 1
 }  

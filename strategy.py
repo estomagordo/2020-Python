@@ -58,6 +58,9 @@ class Strategy:
         self.energy_change_cooldown = settings['energy_change_cooldown']
         self.temp_diff_freakout_cutoff = settings['temp_diff_freakout_cutoff']
         self.temp_diff_freakout_factor = settings['temp_diff_freakout_factor']
+        self.mall_weight = settings['mall_weight']
+        self.wind_turbine_weight = settings['wind_turbine_weight']
+        self.park_weight = settings['park_weight']
         
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
 
@@ -116,12 +119,7 @@ class Strategy:
                 if self.game_state.map[x][y] == 0:
                     return x, y
 
-        if name == 'WindMill':
-            for x, y in self.wind_turbine_spaces:
-                if self.game_state.map[x][y] == 0:
-                    return x, y
-
-        if name == 'Park':
+        if name in ('WindMill', 'Park'):
             best = [-1, -1, -1]
 
             for x, row in enumerate(self.game_state.map):
@@ -140,11 +138,23 @@ class Strategy:
 
             return best[1:]
 
-        for x, y in self.housing_spaces:
-            if self.game_state.map[x][y] == 0:
-                return x, y
+        best = [-1, -1, -1]
 
-        return -1, -1
+        for x, row in enumerate(self.game_state.map):
+            for y, cell in enumerate(row):
+                if (x, y) in self.mall_spaces or cell != 0:
+                    continue
+                
+                weight = 0
+
+                for utility in self.game_state.utilities:
+                    if abs(x - utility.X) + abs(y - utility.Y) <= 2:
+                        weight += self.mall_weight if utility.building_name == 'Mall' else self.wind_turbine_weight if utility.building_name == 'WindMill' else self.park_weight
+
+                if weight > best[0]:
+                    best = [weight, x, y]
+
+        return best[1:]
     
     def should_repair(self, name):
         limit = {
