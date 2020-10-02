@@ -65,9 +65,11 @@ def simple2():
 
         for residence in game_layer.game_state.residences:
             game_layer.game_state.map[residence.X][residence.Y] = 1
+            strategy.building_counts[residence.building_name] += 1
 
         for utility in game_layer.game_state.utilities:
             game_layer.game_state.map[utility.X][utility.Y] = 1
+            strategy.building_counts[utility.building_name] += 1
 
         commands = []
     
