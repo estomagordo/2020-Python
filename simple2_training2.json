@@ -56,5 +56,7 @@
     "wind_turbine_weight": 2,
     "park_weight": 1,
     "residence_weight": 1,
-    "residence_weight_length": 2
+    "residence_weight_length": 2,
+    "target_temp": 21.0,
+    "temperature_dampening_factor": 3.0
 }  

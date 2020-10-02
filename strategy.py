@@ -63,6 +63,8 @@ class Strategy:
         self.park_weight = settings['park_weight']
         self.residence_weight = settings['residence_weight']
         self.residence_weight_length = settings['residence_weight_length']
+        self.target_temp = settings['target_temp']
+        self.temperature_dampening_factor = settings['temperature_dampening_factor']
         
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
 
@@ -219,6 +221,20 @@ class Strategy:
 
         return count
 
+    def adjust_energy(self, residence):
+        degrees_per_pop = 0.04
+        degrees_per_excess_mwh = 0.75
+        base_energy_need = [bp for bp in self.game_state.available_residence_buildings if bp.building_name == residence.building_name][0].base_energy_need
+        outdoor_temp = self.game_state.current_temp
+        emissivity = [bp for bp in self.game_state.available_residence_buildings if bp.building_name == residence.building_name][0].emissivity * (0.6 if 'Insulation' in residence.effects else 1.0)
+
+        current = residence.effective_energy_in
+        target = (-residence.temperature + base_energy_need * degrees_per_excess_mwh - degrees_per_pop * residence.current_pop + residence.temperature * emissivity - outdoor_temp * emissivity + self.target_temp) / degrees_per_excess_mwh
+
+        result = current + (target - current) / self.temperature_dampening_factor
+
+        return result, base_energy_need
+
     def base_energy_need_for_building(self, name):
         for blueprint in self.game_state.available_residence_buildings:
             if blueprint.building_name == name:
@@ -235,14 +251,14 @@ class Strategy:
             if residence.temperature > self.high_temp and residence.requested_energy_in == self.base_energy_need_for_building(residence.building_name):
                 continue
             
-            candidates.append((abs(21.0 - residence.temperature), residence.X, residence.Y, residence.temperature > self.high_temp, residence.requested_energy_in, self.base_energy_need_for_building(residence.building_name)))
+            candidates.append((abs(21.0 - residence.temperature), residence))
 
         if not candidates:
-            return -1, -1, -1, False, -1.0, -1.0
+            return None
 
-        candidates.sort(reverse=True)
+        candidates.sort(key=lambda candidate:-candidate[0])
 
-        return candidates[0]
+        return candidates[0][1]
 
     def lower_energy(self, diff):
         factor = self.temp_diff_freakout_factor if diff > self.temp_diff_freakout_cutoff else 1.0
