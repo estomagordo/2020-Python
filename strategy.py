@@ -59,6 +59,8 @@ class Strategy:
         self.temp_diff_freakout_cutoff = settings['temp_diff_freakout_cutoff']
         self.temp_diff_freakout_factor = settings['temp_diff_freakout_factor']
 
+
+
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
 
     def build_choice(self):
@@ -160,6 +162,11 @@ class Strategy:
 
         return count
 
+    def base_energy_need_for_building(self, name):
+        for blueprint in self.game_state.available_residence_buildings:
+            if blueprint.building_name == name:
+                return blueprint.base_energy_need
+
     def most_urgent_energy_changee(self):
         candidates = []
 
@@ -168,10 +175,13 @@ class Strategy:
                 continue
             if self.low_temp <= residence.temperature <= self.high_temp:
                 continue
-            candidates.append((abs(21.0 - residence.temperature), residence.X, residence.Y, residence.temperature > self.high_temp, residence.requested_energy_in))
+            if residence.temperature > self.high_temp and residence.requested_energy_in == self.base_energy_need_for_building(residence.building_name):
+                continue
+            
+            candidates.append((abs(21.0 - residence.temperature), residence.X, residence.Y, residence.temperature > self.high_temp, residence.requested_energy_in, self.base_energy_need_for_building(residence.building_name)))
 
         if not candidates:
-            return -1, -1, -1, False, -1.0
+            return -1, -1, -1, False, -1.0, -1.0
 
         candidates.sort(reverse=True)
 
