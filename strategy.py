@@ -75,7 +75,28 @@ class Strategy:
         wind_turbine = (self.wind_turbine_threshold + (0 if self.game_state.turn > 665 else self.wind_turbine_step * self.building_counts['WindTurbine']), 7500, 'WindTurbine')
         mall = (self.mall_threshold + self.mall_step * (0 if self.game_state.turn > 665 else self.building_counts['Mall']), 16000, 'Mall')
 
-        return sorted([b for b in (highrise, modern, apartments, cabin, environmental, luxury, park, wind_turbine, mall)])
+        choices = []
+
+        if len(self.game_state.residences) < self.max_residences:
+            choices.append(modern)
+            choices.append(apartments)
+            choices.append(cabin)
+            choices.append(environmental)
+            choices.append(luxury)
+
+            if self.building_counts['HighRise'] < self.highrise_limit:
+                choices.append(highrise)
+
+        if self.building_counts['Park'] < self.max_parks:
+            choices.append(park)
+
+        if self.building_counts['WindTurbine'] < self.max_wind_mills:
+            choices.append(wind_turbine)
+
+        if self.building_counts['Mall'] < self.max_malls:
+            choices.append(mall)
+        
+        return sorted(choices)
 
     def charger_threshold(self):
         if self.game_state.turn >= self.lower_upgrade_threshold:

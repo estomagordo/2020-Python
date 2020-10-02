@@ -294,13 +294,7 @@ def take_turn2(strategy):
             if cost > state.funds:
                 break
 
-            if len(state.residences) == strategy.max_residences and name not in ('Mall', 'Park', 'WindTurbine'):
-                continue
-
             if name not in state.releases or state.releases[name] > state.turn:
-                continue
-
-            if name == 'HighRise' and strategy.building_counts[name] == strategy.highrise_limit:
                 continue
 
             if not state.available_spaces():
