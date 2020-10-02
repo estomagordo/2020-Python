@@ -140,10 +140,7 @@ class Strategy:
         if name == 'Mall':
             best = [-1, -1, -1]
 
-            for x, y in self.mall_spaces:
-                if self.game_state.map[x][y] != 0:
-                    continue
-
+            for x, y in self.game_state.available_spaces():
                 count = 0
 
                 for residence in self.game_state.residences:
@@ -159,6 +156,9 @@ class Strategy:
             best = [-1, -1, -1]
 
             for x, y in self.game_state.available_spaces():
+                if (x, y) in self.mall_spaces:
+                    continue
+                
                 count = 0
 
                 for residence in self.game_state.residences:
@@ -172,7 +172,10 @@ class Strategy:
 
         best = [-1, -1, -1]
 
-        for x, y in self.game_state.available_spaces():                
+        for x, y in self.game_state.available_spaces():
+            if (x, y) in self.mall_spaces:
+                continue
+
             weight = 0
 
             for utility in self.game_state.utilities:
