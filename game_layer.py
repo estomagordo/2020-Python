@@ -25,6 +25,8 @@ class GameLayer:
             return self.demolish(pos)
         if command == 'adjust_energy_level':
             return self.adjust_energy_level(pos, float(instruction[3]))
+        if command == 'demolish':
+            return self.demolish(pos)
         return self.buy_upgrade(pos, instruction[3])
 
     def validate(self, s):

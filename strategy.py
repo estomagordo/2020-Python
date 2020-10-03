@@ -66,6 +66,10 @@ class Strategy:
         self.target_temp = settings['target_temp']
         self.temperature_dampening_factor = settings['temperature_dampening_factor']
         self.start_upgrading_turn = settings['start_upgrading_turn']
+        self.earliest_demolish = settings['earliest_demolish']
+        self.latest_demolish = settings['latest_demolish']
+        self.demolish_fund_limit = settings['demolish_fund_limit']
+        self.demolishing_queue_limit = settings['demolishing_queue_limit']
         
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
 

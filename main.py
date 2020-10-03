@@ -74,9 +74,11 @@ def simple2():
         commands = []
     
         while game_layer.game_state.turn < game_layer.game_state.max_turns:
-            command = take_turn2(strategy)
-            commands.append(command)
-            game_layer.translate(command.split())
+            new_commands = take_turn2(strategy)
+            commands += new_commands
+            
+            for command in new_commands:
+                game_layer.translate(command.split())
             # print(game_layer.game_state)
 
         # print(game_layer.game_state)
@@ -239,15 +241,15 @@ def take_turn2(strategy):
 
     for residence in state.residences:
         if residence.build_progress < 100:
-            return f'build {residence.X} {residence.Y}'
+            return [f'build {residence.X} {residence.Y}']
 
     for utility in state.utilities:
         if utility.build_progress < 100:
-            return f'build {utility.X} {utility.Y}'
+            return [f'build {utility.X} {utility.Y}']
 
     for residence in state.residences:
         if residence.health < strategy.repair_limit and strategy.should_repair(residence.building_name):
-            return f'maintenance {residence.X} {residence.Y}'
+            return [f'maintenance {residence.X} {residence.Y}']
 
     adjustee = strategy.most_urgent_energy_changee()
 
@@ -256,7 +258,7 @@ def take_turn2(strategy):
 
         strategy.energy_adjustments[(adjustee.X, adjustee.Y)] = state.turn    
 
-        return f'adjust_energy_level {adjustee.X} {adjustee.Y} {max(base_energy_need, energy_level)}'
+        return [f'adjust_energy_level {adjustee.X} {adjustee.Y} {max(base_energy_need, energy_level)}']
 
     if state.funds >= strategy.charger_threshold():
         for residence in state.residences:
@@ -265,32 +267,32 @@ def take_turn2(strategy):
                     if utility.building_name != 'Mall':
                         continue
                     if 2 <= abs(residence.X - utility.X) + abs(residence.Y - utility.Y) <= 3:
-                        return f'buy_upgrade {residence.X} {residence.Y} Charger'
+                        return [f'buy_upgrade {residence.X} {residence.Y} Charger']
 
     if state.funds >= strategy.caretaker_threshold():
         for residence in state.residences:
             if 'Caretaker' not in residence.effects:
-                return f'buy_upgrade {residence.X} {residence.Y} Caretaker'
+                return [f'buy_upgrade {residence.X} {residence.Y} Caretaker']
 
     if state.funds >= strategy.insulation_threshold():
         for residence in state.residences:
             if 'Insulation' not in residence.effects:
-                return f'buy_upgrade {residence.X} {residence.Y} Insulation'
+                return [f'buy_upgrade {residence.X} {residence.Y} Insulation']
 
     if state.funds >= strategy.regulator_threshold():
         for residence in state.residences:
             if 'Regulator' not in residence.effects:
-                return f'buy_upgrade {residence.X} {residence.Y} Regulator'
+                return [f'buy_upgrade {residence.X} {residence.Y} Regulator']
 
     if state.funds >= strategy.playground_threshold():
         for residence in state.residences:
             if 'Playground' not in residence.effects:
-                return f'buy_upgrade {residence.X} {residence.Y} Playground'
+                return [f'buy_upgrade {residence.X} {residence.Y} Playground']
 
     if state.funds >= strategy.solar_panel_threshold():
         for residence in state.residences:
             if 'SolarPanel' not in residence.effects:
-                return f'buy_upgrade {residence.X} {residence.Y} SolarPanel'
+                return [f'buy_upgrade {residence.X} {residence.Y} SolarPanel']
 
     if state.funds >= strategy.purchase_threshold:
         for _, cost, name in strategy.build_choice():
@@ -310,9 +312,20 @@ def take_turn2(strategy):
 
             strategy.building_counts[name] += 1
             
-            return f'place_foundation {x} {y} {name}'
+            return [f'place_foundation {x} {y} {name}']
+
+    if strategy.earliest_demolish <= state.turn <= strategy.latest_demolish and state.funds >= strategy.demolish_fund_limit and strategy.building_counts['HighRise'] < strategy.highrise_limit and state.housing_queue >= strategy.demolishing_queue_limit:
+        if strategy.building_counts['Apartments'] > 1:
+            for residence in state.residences:
+                if residence.building_name == 'Apartments':
+                    commands = [f'demolish {residence.X} {residence.Y}', f'place_foundation {residence.X} {residence.Y} HighRise']
+
+                    strategy.building_counts['HighRise'] += 1
+                    strategy.building_counts['Apartments'] -= 1
+
+                    return commands
     
-    return 'wait'
+    return ['wait']
 
 
 if __name__ == '__main__':

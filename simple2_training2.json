@@ -59,5 +59,9 @@
     "residence_weight_length": 2,
     "target_temp": 21.0,
     "temperature_dampening_factor": 2.8,
-    "start_upgrading_turn": 80
+    "start_upgrading_turn": 80,
+    "earliest_demolish": 700,
+    "latest_demolish": 650,
+    "demolish_fund_limit": 35000,
+    "demolishing_queue_limit": 45
 }  
