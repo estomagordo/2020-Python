@@ -70,6 +70,7 @@ class Strategy:
         self.latest_demolish = settings['latest_demolish']
         self.demolish_fund_limit = settings['demolish_fund_limit']
         self.demolishing_queue_limit = settings['demolishing_queue_limit']
+        self.temperature_undershoot_bounce = settings['temperature_undershoot_bounce']
         
         self.demolished = None
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
@@ -283,7 +284,7 @@ class Strategy:
 
         result = current + (target - current) / self.temperature_dampening_factor
 
-        return result, base_energy_need
+        return result, base_energy_need, current
 
     def base_energy_need_for_building(self, name):
         for blueprint in self.game_state.available_residence_buildings:

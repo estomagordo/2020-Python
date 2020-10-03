@@ -63,5 +63,6 @@
     "earliest_demolish": 700,
     "latest_demolish": 650,
     "demolish_fund_limit": 35000,
-    "demolishing_queue_limit": 45
+    "demolishing_queue_limit": 45,
+    "temperature_undershoot_bounce": 0.33
 }  

@@ -259,11 +259,13 @@ def take_turn2(strategy):
     adjustee = strategy.most_urgent_energy_changee()
 
     if adjustee:
-        energy_level, base_energy_need = strategy.adjust_energy(adjustee)
+        energy_level, base_energy_need, current_level = strategy.adjust_energy(adjustee)
 
-        strategy.energy_adjustments[(adjustee.X, adjustee.Y)] = state.turn    
+        strategy.energy_adjustments[(adjustee.X, adjustee.Y)] = state.turn
 
-        return f'adjust_energy_level {adjustee.X} {adjustee.Y} {max(base_energy_need, energy_level)}'
+        new_level = energy_level if energy_level > base_energy_need else base_energy_need + (current_level - base_energy_need) * strategy.temperature_undershoot_bounce
+
+        return f'adjust_energy_level {adjustee.X} {adjustee.Y} {new_level}'
 
     if state.funds >= strategy.charger_threshold():
         for residence in state.residences:
