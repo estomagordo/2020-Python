@@ -77,7 +77,7 @@ def simple2():
             command = take_turn2(strategy)
             commands.append(command)
             
-            game_layer.translate(command)
+            game_layer.translate(command.split())
             # print(game_layer.game_state)
 
         # print(game_layer.game_state)
@@ -241,6 +241,7 @@ def take_turn2(strategy):
     if strategy.demolished:
         x, y = strategy.demolished
         strategy.building_counts['HighRise'] += 1
+        strategy.demolished = None
         return f'place_foundation {x} {y} HighRise'
 
     for residence in state.residences:
