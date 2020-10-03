@@ -65,6 +65,7 @@ class Strategy:
         self.residence_weight_length = settings['residence_weight_length']
         self.target_temp = settings['target_temp']
         self.temperature_dampening_factor = settings['temperature_dampening_factor']
+        self.start_upgrading_turn = settings['start_upgrading_turn']
         
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
 
@@ -103,36 +104,54 @@ class Strategy:
         return sorted(choices)
 
     def charger_threshold(self):
+        if self.game_state.turn < self.start_upgrading_turn:
+            return 10**9
+
         if self.game_state.turn >= self.lower_upgrade_threshold:
             return self.lower_charger_threshold
 
         return self.charger_base_threshold
 
     def caretaker_threshold(self):
+        if self.game_state.turn < self.start_upgrading_turn:
+            return 10**9
+            
         if self.game_state.turn >= self.lower_upgrade_threshold:
             return self.lower_caretaker_threshold
 
         return self.caretaker_base_threshold
 
     def insulation_threshold(self):
+        if self.game_state.turn < self.start_upgrading_turn:
+            return 10**9
+            
         if self.game_state.turn >= self.lower_upgrade_threshold:
             return self.lower_insulation_threshold
 
         return self.insulation_base_threshold
 
     def regulator_threshold(self):
+        if self.game_state.turn < self.start_upgrading_turn:
+            return 10**9
+            
         if self.game_state.turn >= self.lower_upgrade_threshold:
             return self.lower_regulator_threshold
 
         return self.regulator_base_threshold
 
     def playground_threshold(self):
+        if self.game_state.turn < self.start_upgrading_turn:
+            return 10**9
+            
         if self.game_state.turn >= self.lower_upgrade_threshold:
             return self.lower_playground_threshold
 
         return self.playground_base_threshold
 
     def solar_panel_threshold(self):
+        if self.game_state.turn < self.start_upgrading_turn:
+            return 10**9
+            
         if self.game_state.turn >= self.lower_upgrade_threshold:
             return self.lower_solar_panel_threshold
 

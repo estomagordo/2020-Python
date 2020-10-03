@@ -58,5 +58,6 @@
     "residence_weight": 1,
     "residence_weight_length": 2,
     "target_temp": 21.0,
-    "temperature_dampening_factor": 2.8
+    "temperature_dampening_factor": 2.8,
+    "start_upgrading_turn": 80
 }  

@@ -40,7 +40,7 @@
     "purchase_threshold": 6000,
     "max_malls": 1,
     "max_wind_turbines": 2,
-    "max_parks": 3,
+    "max_parks": 4,
     "lower_upgrade_threshold": 660,
     "lower_regulator_threshold": 2000   ,
     "lower_playground_threshold": 6000,
@@ -58,5 +58,6 @@
     "residence_weight": 1,
     "residence_weight_length": 2,
     "target_temp": 21.0,
-    "temperature_dampening_factor": 3.0
+    "temperature_dampening_factor": 2.8,
+    "start_upgrading_turn": 80
 }  
