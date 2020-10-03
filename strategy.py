@@ -273,7 +273,7 @@ class Strategy:
     def adjust_energy(self, residence):
         degrees_per_pop = 0.04
         degrees_per_excess_mwh = 0.75
-        base_energy_need = [bp for bp in self.game_state.available_residence_buildings if bp.building_name == residence.building_name][0].base_energy_need
+        base_energy_need = [bp for bp in self.game_state.available_residence_buildings if bp.building_name == residence.building_name][0].base_energy_need + (1.8 if 'Charger' in residence.effects else 0.0)
         outdoor_temp = self.game_state.current_temp
         emissivity = [bp for bp in self.game_state.available_residence_buildings if bp.building_name == residence.building_name][0].emissivity * (0.6 if 'Insulation' in residence.effects else 1.0)
 
