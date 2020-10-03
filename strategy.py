@@ -71,6 +71,7 @@ class Strategy:
         self.demolish_fund_limit = settings['demolish_fund_limit']
         self.demolishing_queue_limit = settings['demolishing_queue_limit']
         
+        self.demolished = None
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
 
     def build_choice(self):
