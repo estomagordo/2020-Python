@@ -165,7 +165,20 @@ class Strategy:
                 count = 0
 
                 for residence in self.game_state.residences:
-                    if abs(x - residence.X) + abs(y - residence.Y) <= 3:
+                    if abs(x - residence.X) + abs(y - residence.Y) > 3:
+                        continue
+
+                    good = True
+
+                    for utility in self.game_state.utilities:
+                        if utility.building_name != 'Mall':
+                            continue
+
+                        if abs(utility.X - residence.X) + abs(utility.Y - residence.Y) <= 3:
+                            good = False
+                            break
+
+                    if good:
                         count += 1
 
                 if count > best[0]:
@@ -183,7 +196,20 @@ class Strategy:
                 count = 0
 
                 for residence in self.game_state.residences:
-                    if abs(x - residence.X) + abs(y - residence.Y) <= 2:
+                    if abs(x - residence.X) + abs(y - residence.Y) > 2:
+                        continue
+
+                    good = True
+
+                    for utility in self.game_state.utilities:
+                        if utility.building_name != name:
+                            continue
+
+                        if abs(utility.X - residence.X) + abs(utility.Y - residence.Y) <= 2:
+                            good = False
+                            break
+
+                    if good:
                         count += 1
 
                 if count > best[0]:
