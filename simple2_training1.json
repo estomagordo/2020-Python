@@ -79,12 +79,12 @@
         "8 1 HighRise",
         "7 2 ModernApartments",
         "8 2 Park",
-        "7 3 ModernApartments",
+        "7 3 HighRise",
         "6 2 WindTurbine",
         "8 8 HighRise",
         "8 7 Park",
-        "7 8 ModernApartments",
-        "0 0 ModernApartments",
+        "7 8 HighRise",
+        "0 0 HighRise",
         "0 1 HighRise"
     ]
 }  
