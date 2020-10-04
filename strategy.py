@@ -72,10 +72,19 @@ class Strategy:
         self.demolishing_queue_limit = settings['demolishing_queue_limit']
         self.temperature_undershoot_bounce = settings['temperature_undershoot_bounce']
         self.build_order = settings['build_order']
+        self.upgrade_order = settings['upgrade_order']
         
         self.demolished = None
         self.build_order_pos = 0
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
+        self.upgrade_thresholds = {
+            'Charger': self.charger_threshold(),
+            'Insulation': self.insulation_threshold(),
+            'Playground': self.playground_threshold(),
+            'Regulator': self.regulator_threshold(),
+            'Caretaker': self.caretaker_threshold(),
+            'SolarPanel': self.solar_panel_threshold()
+        }
 
     def build_choice(self):
         if self.build_order:
@@ -177,6 +186,22 @@ class Strategy:
             return self.lower_solar_panel_threshold
 
         return self.solar_panel_base_threshold
+
+    def upgrade_suggestion(self):
+        for upgrade in self.upgrade_order:
+            if self.game_state.funds >= self.upgrade_thresholds[upgrade]:
+                for residence in self.game_state.residences:
+                    if upgrade not in residence.effects:
+                        if upgrade == 'Charger':
+                            for utility in self.game_state.utilities:
+                                if utility.building_name != 'Mall':
+                                    continue
+                                if 2 <= abs(residence.X - utility.X) + abs(residence.Y - utility.Y) <= 3:
+                                    return upgrade, residence.X, residence.Y
+                        else:
+                            return upgrade, residence.X, residence.Y
+
+        return '', -1, -1
     
     def build_place(self, name):
         if name == 'Mall':

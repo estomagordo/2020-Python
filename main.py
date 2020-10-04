@@ -267,39 +267,10 @@ def take_turn2(strategy):
 
         return f'adjust_energy_level {adjustee.X} {adjustee.Y} {new_level}'
 
-    if state.funds >= strategy.charger_threshold():
-        for residence in state.residences:
-            if 'Charger' not in residence.effects:
-                for utility in state.utilities:
-                    if utility.building_name != 'Mall':
-                        continue
-                    if 2 <= abs(residence.X - utility.X) + abs(residence.Y - utility.Y) <= 3:
-                        return f'buy_upgrade {residence.X} {residence.Y} Charger'
+    upgrade, x, y = strategy.upgrade_suggestion()
 
-    if state.funds >= strategy.caretaker_threshold():
-        for residence in state.residences:
-            if 'Caretaker' not in residence.effects:
-                return f'buy_upgrade {residence.X} {residence.Y} Caretaker'
-
-    if state.funds >= strategy.insulation_threshold():
-        for residence in state.residences:
-            if 'Insulation' not in residence.effects:
-                return f'buy_upgrade {residence.X} {residence.Y} Insulation'
-
-    if state.funds >= strategy.regulator_threshold():
-        for residence in state.residences:
-            if 'Regulator' not in residence.effects:
-                return f'buy_upgrade {residence.X} {residence.Y} Regulator'
-
-    if state.funds >= strategy.playground_threshold():
-        for residence in state.residences:
-            if 'Playground' not in residence.effects:
-                return f'buy_upgrade {residence.X} {residence.Y} Playground'
-
-    if state.funds >= strategy.solar_panel_threshold():
-        for residence in state.residences:
-            if 'SolarPanel' not in residence.effects:
-                return f'buy_upgrade {residence.X} {residence.Y} SolarPanel'
+    if upgrade:
+        return f'buy_upgrade {residence.X} {residence.Y} {upgrade}'
 
     if state.funds >= strategy.purchase_threshold:
         for _, cost, name, x, y in strategy.build_choice():
