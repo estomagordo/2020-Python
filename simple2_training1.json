@@ -60,9 +60,9 @@
     "target_temp": 21.0,
     "temperature_dampening_factor": 2.8,
     "start_upgrading_turn": 80,
-    "earliest_demolish": 700,
-    "latest_demolish": 650,
-    "demolish_fund_limit": 35000,
-    "demolishing_queue_limit": 45,
+    "earliest_demolish": 580,
+    "latest_demolish": 660,
+    "demolish_fund_limit": 30000,
+    "demolishing_queue_limit": 42,
     "temperature_undershoot_bounce": 0.33
 }  
