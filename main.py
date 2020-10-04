@@ -270,7 +270,7 @@ def take_turn2(strategy):
     upgrade, x, y = strategy.upgrade_suggestion()
     
     if upgrade:
-        return f'buy_upgrade {residence.X} {residence.Y} {upgrade}'
+        return f'buy_upgrade {x} {y} {upgrade}'
 
     if state.funds >= strategy.purchase_threshold:
         for _, cost, name, x, y, order in strategy.build_choice():
