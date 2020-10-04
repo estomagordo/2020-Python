@@ -77,14 +77,19 @@ class Strategy:
         self.demolished = None
         self.build_order_picks = set()
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
-        self.upgrade_thresholds = {
-            'Charger': self.charger_threshold(),
-            'Insulation': self.insulation_threshold(),
-            'Playground': self.playground_threshold(),
-            'Regulator': self.regulator_threshold(),
-            'Caretaker': self.caretaker_threshold(),
-            'SolarPanel': self.solar_panel_threshold()
-        }
+
+    def upgrade_threshold(self, upgrade):
+        if upgrade == 'Charger':
+            return self.charger_threshold()
+        if upgrade == 'Insulation':
+            return self.insulation_threshold()
+        if upgrade == 'Playground':
+            return self.playground_threshold()
+        if upgrade == 'Regulator':
+            return self.regulator_threshold()
+        if upgrade == 'Caretaker':
+            return self.caretaker_threshold()
+        return self.solar_panel_threshold()
 
     def build_choice(self):
         if self.build_order:
@@ -195,7 +200,7 @@ class Strategy:
 
     def upgrade_suggestion(self):
         for upgrade in self.upgrade_order:
-            if self.game_state.funds >= self.upgrade_thresholds[upgrade]:
+            if self.game_state.funds >= self.upgrade_threshold(upgrade):
                 for residence in self.game_state.residences:
                     if upgrade not in residence.effects:
                         if upgrade == 'Charger':

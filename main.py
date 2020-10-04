@@ -268,7 +268,7 @@ def take_turn2(strategy):
         return f'adjust_energy_level {adjustee.X} {adjustee.Y} {new_level}'
 
     upgrade, x, y = strategy.upgrade_suggestion()
-
+    
     if upgrade:
         return f'buy_upgrade {residence.X} {residence.Y} {upgrade}'
 
