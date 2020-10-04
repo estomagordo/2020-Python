@@ -75,7 +75,7 @@ class Strategy:
         self.upgrade_order = settings['upgrade_order']
         
         self.demolished = None
-        self.build_order_pos = 0
+        self.build_order_picks = set()
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
         self.upgrade_thresholds = {
             'Charger': self.charger_threshold(),
@@ -88,27 +88,33 @@ class Strategy:
 
     def build_choice(self):
         if self.build_order:
-            if self.build_order_pos == len(self.build_order):
-                return [[10**9, 10**9, '', -1, -1]]
+            for pos, order in enumerate(self.build_order):
+                if pos in self.build_order_picks:
+                    continue
+                
+                choice = order.split()
+                name = choice[2]
+                x = int(choice[0])
+                y = int(choice[1])
 
-            choice = self.build_order[self.build_order_pos].split()
-            name = choice[2]
-            x = int(choice[0])
-            y = int(choice[1])
+                if name not in self.game_state.releases or self.game_state.releases[name] > self.game_state.turn:
+                    continue
 
-            cost = [building for building in self.game_state.available_buildings if building.building_name == name][0].cost
+                cost = [building for building in self.game_state.available_buildings if building.building_name == name][0].cost
 
-            return [[-1, cost, name, x, y]]
+                return [[-1, cost, name, x, y, pos]]
+                
+            return [[10**9, 10**9, '', -1, -1, -1]]            
 
-        highrise = (self.highrise_threshold + self.highrise_step * (0 if self.game_state.turn > 665 else self.building_counts['HighRise']), 18000, 'HighRise', -1, -1)
-        modern = (self.modern_threshold + self.modern_step * (0 if self.game_state.turn > 665 else self.building_counts['ModernApartments']), 7100, 'ModernApartments', -1, -1)
-        apartments = (self.apartments_threshold + self.apartments_step * (0 if self.game_state.turn > 665 else self.building_counts['Apartments']), 5200, 'Apartments', -1, -1)
-        cabin = (self.cabin_threshold + self.cabin_step * (0 if self.game_state.turn > 665 else self.building_counts['Cabin']), 2500, 'Cabin', -1, -1)
-        environmental = (self.environmental_threshold + (0 if self.game_state.turn > 665 else self.environmental_step * self.building_counts['EnvironmentalHouse']), 9000, 'EnvironmentalHouse', -1, -1)
-        luxury = (self.luxury_threshold + self.luxury_step * (0 if self.game_state.turn > 665 else self.building_counts['LuxuryResidence']), 3400, 'LuxuryResidence', -1, -1)
-        park = (self.park_threshold + self.park_step * (0 if self.game_state.turn > 665 else self.building_counts['Park']), 3750, 'Park', -1, -1)
-        wind_turbine = (self.wind_turbine_threshold + (0 if self.game_state.turn > 665 else self.wind_turbine_step * self.building_counts['WindTurbine']), 7500, 'WindTurbine', -1, -1)
-        mall = (self.mall_threshold + self.mall_step * (0 if self.game_state.turn > 665 else self.building_counts['Mall']), 16000, 'Mall', -1, -1)
+        highrise = (self.highrise_threshold + self.highrise_step * (0 if self.game_state.turn > 665 else self.building_counts['HighRise']), 18000, 'HighRise', -1, -1, -1)
+        modern = (self.modern_threshold + self.modern_step * (0 if self.game_state.turn > 665 else self.building_counts['ModernApartments']), 7100, 'ModernApartments', -1, -1, -1)
+        apartments = (self.apartments_threshold + self.apartments_step * (0 if self.game_state.turn > 665 else self.building_counts['Apartments']), 5200, 'Apartments', -1, -1, -1)
+        cabin = (self.cabin_threshold + self.cabin_step * (0 if self.game_state.turn > 665 else self.building_counts['Cabin']), 2500, 'Cabin', -1, -1, -1)
+        environmental = (self.environmental_threshold + (0 if self.game_state.turn > 665 else self.environmental_step * self.building_counts['EnvironmentalHouse']), 9000, 'EnvironmentalHouse', -1, -1, -1)
+        luxury = (self.luxury_threshold + self.luxury_step * (0 if self.game_state.turn > 665 else self.building_counts['LuxuryResidence']), 3400, 'LuxuryResidence', -1, -1, -1)
+        park = (self.park_threshold + self.park_step * (0 if self.game_state.turn > 665 else self.building_counts['Park']), 3750, 'Park', -1, -1, -1)
+        wind_turbine = (self.wind_turbine_threshold + (0 if self.game_state.turn > 665 else self.wind_turbine_step * self.building_counts['WindTurbine']), 7500, 'WindTurbine', -1, -1, -1)
+        mall = (self.mall_threshold + self.mall_step * (0 if self.game_state.turn > 665 else self.building_counts['Mall']), 16000, 'Mall', -1, -1, -1)
 
         choices = []
 

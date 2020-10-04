@@ -84,7 +84,14 @@
         "7 6 HighRise",
         "7 8 Apartments",
         "9 8 ModernApartments",
-        "8 6 Park"
+        "8 6 Park",
+        "3 5 HighRise",
+        "9 7 ModernApartments",
+        "3 6 HighRise",
+        "5 3 EnvironmentalHouse",
+        "7 9 ModernApartments",
+        "8 5 EnvironmentalHouse",
+        "9 6 ModernApartments"
     ],
-    "upgrade_order": ["Charger", "Insulation", "Playground", "Regulator", "Caretaker", "SolarPanel"]
+    "upgrade_order": ["Charger", "Insulation", "Regulator", "Playground", "Caretaker", "SolarPanel"]
 }  
