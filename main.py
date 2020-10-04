@@ -302,9 +302,13 @@ def take_turn2(strategy):
                 return f'buy_upgrade {residence.X} {residence.Y} SolarPanel'
 
     if state.funds >= strategy.purchase_threshold:
-        for _, cost, name in strategy.build_choice():
+        for _, cost, name, x, y in strategy.build_choice():
             if cost > state.funds:
                 break
+
+            if x >= 0:
+                strategy.build_order_pos += 1
+                return f'place_foundation {x} {y} {name}'
 
             if name not in state.releases or state.releases[name] > state.turn:
                 continue

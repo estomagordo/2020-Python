@@ -9,6 +9,7 @@ class GameState:
         self.energy_levels = list(map(EnergyLevel, map_values['energyLevels']))
         self.available_residence_buildings = list(map(BlueprintResidenceBuilding, map_values['availableResidenceBuildings']))
         self.available_utility_buildings = list(map(BlueprintUtilityBuilding, map_values['availableUtilityBuildings']))
+        self.available_buildings = self.available_residence_buildings + self.available_utility_buildings
         self.available_upgrades = list(map(Upgrade, map_values['availableUpgrades']))
         self.effects = list(map(Effect, map_values['effects']))
         self.releases = {b.building_name: b.release_tick for b in (self.available_residence_buildings + self.available_utility_buildings)}
