@@ -65,27 +65,6 @@
     "demolish_fund_limit": 30000,
     "demolishing_queue_limit": 42,
     "temperature_undershoot_bounce": 0.33,
-    "build_order": [
-        "4 6 Apartments",
-        "3 5 Apartments",
-        "3 4 ModernApartments",
-        "3 3 LuxuryResidence",
-        "4 4 ModernApartments",
-        "3 6 Mall",
-        "4 7 EnvironmentalHouse",
-        "4 5 WindTurbine",
-        "3 7 Park",
-        "3 8 Cabin",
-        "8 1 HighRise",
-        "7 2 ModernApartments",
-        "8 2 Park",
-        "7 3 HighRise",
-        "6 2 WindTurbine",
-        "8 8 HighRise",
-        "8 7 Park",
-        "7 8 HighRise",
-        "0 0 HighRise",
-        "0 1 HighRise"
-    ],
+    "build_order": [],
     "upgrade_order": ["Charger", "Insulation", "Playground", "Regulator", "Caretaker", "SolarPanel"]
 }  

@@ -383,9 +383,13 @@ class Strategy:
         radius3 = sorted([pair for pair in spaces], key=lambda pair: -self.inrange(pair[0], pair[1], 3))
         radius2 = sorted([pair for pair in spaces], key=lambda pair: -self.inrange(pair[0], pair[1], 2))
         
-        for x in range(self.max_malls):
-            spaces.remove(radius3[x])
-            mall_spaces.append(radius3[x])
+        while len(mall_spaces) < self.max_malls:
+            for x, y in radius3:
+                if not mall_spaces or not any(abs(mx - x) + abs(my - y) < 6 for (mx, my) in mall_spaces):
+                    mall_spaces.append((x, y))
+                    spaces.remove((x, y))
+                    if len(mall_spaces) == self.max_malls:
+                        break
 
         for x in range(self.max_wind_turbines):
             if radius2[x] not in spaces:
