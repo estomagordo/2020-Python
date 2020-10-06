@@ -244,18 +244,6 @@ def take_turn2(strategy):
         strategy.demolished = None
         return f'place_foundation {x} {y} HighRise'
 
-    for residence in state.residences:
-        if residence.build_progress < 100:
-            return f'build {residence.X} {residence.Y}'
-
-    for utility in state.utilities:
-        if utility.build_progress < 100:
-            return f'build {utility.X} {utility.Y}'
-
-    for residence in state.residences:
-        if residence.health < strategy.repair_limit and strategy.should_repair(residence.building_name):
-            return f'maintenance {residence.X} {residence.Y}'
-
     adjustee = strategy.most_urgent_energy_changee()
 
     if adjustee:
@@ -266,6 +254,18 @@ def take_turn2(strategy):
         new_level = energy_level if energy_level > base_energy_need else base_energy_need + (current_level - base_energy_need) * strategy.temperature_undershoot_bounce
 
         return f'adjust_energy_level {adjustee.X} {adjustee.Y} {new_level}'
+
+    for residence in state.residences:
+        if residence.health < strategy.repair_limit and strategy.should_repair(residence.building_name):
+            return f'maintenance {residence.X} {residence.Y}'
+
+    for residence in state.residences:
+        if residence.build_progress < 100:
+            return f'build {residence.X} {residence.Y}'
+
+    for utility in state.utilities:
+        if utility.build_progress < 100:
+            return f'build {utility.X} {utility.Y}'
 
     upgrade, x, y = strategy.upgrade_suggestion()
     

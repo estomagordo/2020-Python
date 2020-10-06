@@ -38,7 +38,7 @@
     "maintenance_luxury": 1150,
     "maintenance_environmental": 1050,
     "purchase_threshold": 6000,
-    "max_malls": 1,
+    "max_malls": 0,
     "max_wind_turbines": 2,
     "max_parks": 4,
     "lower_upgrade_threshold": 660,
@@ -66,5 +66,5 @@
     "demolishing_queue_limit": 42,
     "temperature_undershoot_bounce": 0.33,
     "build_order": [],
-    "upgrade_order": ["Charger", "Insulation", "Playground", "Regulator", "Caretaker", "SolarPanel"]
+    "upgrade_order": ["Insulation", "SolarPanel", "Playground", "Regulator", "Caretaker", "Charger"]
 }  
