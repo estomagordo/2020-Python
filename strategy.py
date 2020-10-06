@@ -75,6 +75,7 @@ class Strategy:
         self.upgrade_order = settings['upgrade_order']
         self.action_order = settings['action_order']
         self.demolish_replacement = settings['demolish_replacement']
+        self.latest_foundation = settings['latest_foundation']
         
         self.demolished = None
         self.build_order_picks = set()
@@ -121,7 +122,7 @@ class Strategy:
                     return f'buy_upgrade {x} {y} {upgrade}'
 
             if action == 'PlaceFoundation':
-                if self.game_state.funds >= self.purchase_threshold:
+                if self.game_state.funds >= self.purchase_threshold and self.game_state.turn <= self.latest_foundation:
                     for _, cost, name, x, y, order in self.build_choice():
                         if cost > self.game_state.funds:
                             break

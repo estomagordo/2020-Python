@@ -68,5 +68,6 @@
     "build_order": [],
     "upgrade_order": ["Insulation", "SolarPanel", "Playground", "Regulator", "Caretaker", "Charger"],
     "action_order": ["ReplaceDemolished", "AdjustEnergy", "Maintain", "Build", "Upgrade", "PlaceFoundation", "Demolish", "Wait"],
-    "demolish_replacement": "ModernApartments"
+    "demolish_replacement": "ModernApartments",
+    "latest_foundation": 690
 }  
