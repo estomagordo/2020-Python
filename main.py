@@ -236,77 +236,7 @@ def take_turn():
 
 
 def take_turn2(strategy):
-    state = game_layer.game_state
-
-    if strategy.demolished:
-        x, y = strategy.demolished
-        strategy.building_counts['HighRise'] += 1
-        strategy.demolished = None
-        return f'place_foundation {x} {y} HighRise'
-
-    adjustee = strategy.most_urgent_energy_changee()
-
-    if adjustee:
-        energy_level, base_energy_need, current_level = strategy.adjust_energy(adjustee)
-
-        strategy.energy_adjustments[(adjustee.X, adjustee.Y)] = state.turn
-
-        new_level = energy_level if energy_level > base_energy_need else base_energy_need + (current_level - base_energy_need) * strategy.temperature_undershoot_bounce
-
-        return f'adjust_energy_level {adjustee.X} {adjustee.Y} {new_level}'
-
-    for residence in state.residences:
-        if residence.health < strategy.repair_limit and strategy.should_repair(residence.building_name):
-            return f'maintenance {residence.X} {residence.Y}'
-
-    for residence in state.residences:
-        if residence.build_progress < 100:
-            return f'build {residence.X} {residence.Y}'
-
-    for utility in state.utilities:
-        if utility.build_progress < 100:
-            return f'build {utility.X} {utility.Y}'
-
-    upgrade, x, y = strategy.upgrade_suggestion()
-    
-    if upgrade:
-        return f'buy_upgrade {x} {y} {upgrade}'
-
-    if state.funds >= strategy.purchase_threshold:
-        for _, cost, name, x, y, order in strategy.build_choice():
-            if cost > state.funds:
-                break
-
-            if x >= 0:
-                strategy.build_order_picks.add(order)
-                return f'place_foundation {x} {y} {name}'
-
-            if name not in state.releases or state.releases[name] > state.turn:
-                continue
-
-            if not state.available_spaces():
-                break
-            
-            x, y = strategy.build_place(name)
-
-            if x == -1:
-                continue
-
-            strategy.building_counts[name] += 1
-            
-            return f'place_foundation {x} {y} {name}'
-
-    if strategy.earliest_demolish <= state.turn <= strategy.latest_demolish and state.funds >= strategy.demolish_fund_limit and strategy.building_counts['HighRise'] < strategy.highrise_limit and state.housing_queue >= strategy.demolishing_queue_limit:
-        if strategy.building_counts['Apartments'] > 1:
-            for residence in state.residences:
-                if residence.building_name == 'Apartments':
-                    strategy.building_counts['Apartments'] -= 1
-                    strategy.demolished = (residence.X, residence.Y)
-
-                    return f'demolish {residence.X} {residence.Y}'
-    
-    return 'wait'
-
+    return strategy.act()
 
 if __name__ == '__main__':
     main()

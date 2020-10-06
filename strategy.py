@@ -73,10 +73,91 @@ class Strategy:
         self.temperature_undershoot_bounce = settings['temperature_undershoot_bounce']
         self.build_order = settings['build_order']
         self.upgrade_order = settings['upgrade_order']
+        self.action_order = settings['action_order']
+        self.demolish_replacement = settings['demolish_replacement']
         
         self.demolished = None
         self.build_order_picks = set()
         self.mall_spaces, self.wind_turbine_spaces, self.park_spaces, self.housing_spaces = self.divide_spaces()
+
+    def act(self):
+        for action in self.action_order:
+            if action == 'ReplaceDemolished':
+                if self.demolished:
+                    x, y = self.demolished
+                    self.building_counts[self.demolish_replacement] += 1
+                    self.demolished = None
+
+                    return f'place_foundation {x} {y} {self.demolish_replacement}'
+
+            if action == 'AdjustEnergy':
+                adjustee = self.most_urgent_energy_changee()
+
+                if adjustee:
+                    energy_level, base_energy_need, current_level = self.adjust_energy(adjustee)
+                    self.energy_adjustments[(adjustee.X, adjustee.Y)] = self.game_state.turn
+                    new_level = energy_level if energy_level > base_energy_need else base_energy_need + (current_level - base_energy_need) * self.temperature_undershoot_bounce
+
+                    return f'adjust_energy_level {adjustee.X} {adjustee.Y} {new_level}'
+
+            if action == 'Maintain':
+                for residence in self.game_state.residences:
+                    if residence.health < self.repair_limit and self.should_repair(residence.building_name):
+                        return f'maintenance {residence.X} {residence.Y}'
+
+            if action == 'Build':
+                for residence in self.game_state.residences:
+                    if residence.build_progress < 100:
+                        return f'build {residence.X} {residence.Y}'
+
+                for utility in self.game_state.utilities:
+                    if utility.build_progress < 100:
+                        return f'build {utility.X} {utility.Y}'
+
+            if action == 'Upgrade':
+                upgrade, x, y = self.upgrade_suggestion()
+    
+                if upgrade:
+                    return f'buy_upgrade {x} {y} {upgrade}'
+
+            if action == 'PlaceFoundation':
+                if self.game_state.funds >= self.purchase_threshold:
+                    for _, cost, name, x, y, order in self.build_choice():
+                        if cost > self.game_state.funds:
+                            break
+
+                        if x >= 0:
+                            self.build_order_picks.add(order)
+                            return f'place_foundation {x} {y} {name}'
+
+                        if name not in self.game_state.releases or self.game_state.releases[name] > self.game_state.turn:
+                            continue
+
+                        if not self.game_state.available_spaces():
+                            break
+                        
+                        x, y = self.build_place(name)
+
+                        if x == -1:
+                            continue
+
+                        self.building_counts[name] += 1
+                        
+                        return f'place_foundation {x} {y} {name}'
+
+            if action == 'Demolish':
+                if self.earliest_demolish <= self.game_state.turn <= self.latest_demolish and self.game_state.funds >= self.demolish_fund_limit and self.building_counts['HighRise'] < self.highrise_limit and self.game_state.housing_queue >= self.demolishing_queue_limit:
+                    if self.building_counts['Apartments'] > 1:
+                        for residence in self.game_state.residences:
+                            if residence.building_name == 'Apartments':
+                                self.building_counts['Apartments'] -= 1
+                                self.demolished = (residence.X, residence.Y)
+
+                                return f'demolish {residence.X} {residence.Y}'
+
+            if action == 'Wait':
+                return 'wait'
+            
 
     def upgrade_threshold(self, upgrade):
         if upgrade == 'Charger':

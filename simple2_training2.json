@@ -91,5 +91,7 @@
         "5 3 EnvironmentalHouse",
         "7 9 ModernApartments"
     ],
-    "upgrade_order": ["Charger", "Insulation", "SolarPanel", "Playground", "Caretaker", "Regulator"]
+    "upgrade_order": ["Charger", "Insulation", "SolarPanel", "Playground", "Caretaker", "Regulator"],
+    "action_order": ["ReplaceDemolished", "AdjustEnergy", "Maintain", "Build", "Upgrade", "PlaceFoundation", "Demolish", "Wait"],
+    "demolish_replacement": "ModernApartments"
 }  
