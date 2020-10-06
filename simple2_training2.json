@@ -94,5 +94,6 @@
     "upgrade_order": ["Charger", "Insulation", "SolarPanel", "Playground", "Caretaker", "Regulator"],
     "action_order": ["ReplaceDemolished", "AdjustEnergy", "Maintain", "Build", "Upgrade", "PlaceFoundation", "Demolish", "Wait"],
     "demolish_replacement": "ModernApartments",
-    "latest_foundation": 690
+    "latest_foundation": 690,
+    "ideal_temperature": 21.0
 }  

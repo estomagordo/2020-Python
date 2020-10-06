@@ -58,7 +58,7 @@
     "residence_weight": 1,
     "residence_weight_length": 2,
     "target_temp": 21.0,
-    "temperature_dampening_factor": 2.8,
+    "temperature_dampening_factor": 3.2,
     "start_upgrading_turn": 80,
     "earliest_demolish": 580,
     "latest_demolish": 660,
@@ -69,5 +69,6 @@
     "upgrade_order": ["Insulation", "SolarPanel", "Playground", "Regulator", "Caretaker", "Charger"],
     "action_order": ["ReplaceDemolished", "AdjustEnergy", "Maintain", "Build", "Upgrade", "PlaceFoundation", "Demolish", "Wait"],
     "demolish_replacement": "ModernApartments",
-    "latest_foundation": 690
+    "latest_foundation": 690,
+    "ideal_temperature": 20.5
 }  

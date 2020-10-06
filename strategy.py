@@ -76,6 +76,7 @@ class Strategy:
         self.action_order = settings['action_order']
         self.demolish_replacement = settings['demolish_replacement']
         self.latest_foundation = settings['latest_foundation']
+        self.ideal_temperature = settings['ideal_temperature']
         
         self.demolished = None
         self.build_order_picks = set()
@@ -435,7 +436,7 @@ class Strategy:
             if residence.temperature > self.high_temp and residence.requested_energy_in == self.base_energy_need_for_building(residence.building_name):
                 continue
             
-            candidates.append((abs(21.0 - residence.temperature), residence))
+            candidates.append((abs(self.ideal_temperature - residence.temperature), residence))
 
         if not candidates:
             return None
