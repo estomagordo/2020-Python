@@ -61,11 +61,11 @@
     "demolishing_queue_limit": 45,
     "temperature_undershoot_bounce": 0.33,
     "build_order": [],
-    "upgrade_order": ["Charger", "Insulation", "SolarPanel", "Playground", "Caretaker", "Regulator"],
+    "upgrade_order": ["Charger", "Insulation", "Regulator", "Playground", "Caretaker", "SolarPanel"],
     "action_order": ["ReplaceDemolished", "AdjustEnergy", "Maintain", "Build", "Upgrade", "PlaceFoundation", "Demolish", "Wait"],
     "demolish_replacement": "ModernApartments",
     "latest_foundation": 690,
     "ideal_temperature": 21.0,
     "temperature_undershoot": 0.5,
-    "temperature_horizon": 5
+    "temperature_horizon": 4
 }  
