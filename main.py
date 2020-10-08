@@ -16,7 +16,7 @@ api_key = ''
 with open('super.secret') as f:
     api_key = f.readline().rstrip()
 
-map_name = 'training'
+map_name = ''
 
 game_layer = GameLayer(api_key)
 
@@ -64,7 +64,7 @@ def simple2():
         while game_layer.game_state.turn < game_layer.game_state.max_turns:
             if game == 0 and game_layer.game_state.turn == 0:
                 print(game_layer.game_state)
-                
+
             command = strategy.act()
             commands.append(command)
             
