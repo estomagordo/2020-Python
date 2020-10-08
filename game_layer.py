@@ -66,6 +66,7 @@ class GameLayer:
         game_options = {'mapName': map_name}
         
         self.game_state = GameState(self.api.new_game(game_options))
+        self.api.set_game_id(self.game_state.game_id)
 
     def end_game(self, game_id=''):
         param = game_id if game_id else self.game_state.game_id

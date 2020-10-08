@@ -8,6 +8,10 @@ class Api:
     def __init__(self, api_key):
         self.api_key = api_key
         self.sess = requests.Session()
+        self.game_id= ''
+
+    def set_game_id(self, game_id):
+        self.game_id = game_id
 
     def new_game(self, game_options=''):
         try:        
@@ -22,10 +26,8 @@ class Api:
             print('Something went wrong with the request: ' + str(e))
 
     def start_game(self, game_id=''):
-        if game_id:
-            game_id = '?GameId=' + game_id
         try:
-            response = self.sess.get(base_api_path + 'start' + game_id, headers={'x-api-key': self.api_key})
+            response = self.sess.get(base_api_path + 'start?GameId=' + self.game_id, headers={'x-api-key': self.api_key})
             if response.status_code == 200:
                 return response.json()
 
@@ -36,10 +38,8 @@ class Api:
             print('Something went wrong with the request: ' + str(e))
 
     def end_game(self, game_id=''):
-        if game_id:
-            game_id = '?GameId=' + game_id
         try:
-            response = self.sess.get(base_api_path + 'end' + game_id, headers={'x-api-key': self.api_key})
+            response = self.sess.get(base_api_path + 'end?GameId=' + self.game_id, headers={'x-api-key': self.api_key})
             if response.status_code == 200:
                 return
 
@@ -50,10 +50,8 @@ class Api:
             print('Something went wrong with the request: ' + str(e))
 
     def get_score(self, game_id=''):
-        if game_id:
-            game_id = '?GameId=' + game_id
         try:
-            response = self.sess.get(base_api_path + 'score' + game_id, headers={'x-api-key': self.api_key})
+            response = self.sess.get(base_api_path + 'score?GameId=' + self.game_id, headers={'x-api-key': self.api_key})
             if response.status_code == 200:
                 return response.json()
 
@@ -64,10 +62,8 @@ class Api:
             print('Something went wrong with the request: ' + str(e))
 
     def get_game_info(self, game_id=''):
-        if game_id:
-            game_id = '?GameId=' + game_id
         try:
-            response = self.sess.get(base_api_path + 'gameInfo' + game_id, headers={'x-api-key': self.api_key})
+            response = self.sess.get(base_api_path + 'gameInfo?GameId=' + self.game_id, headers={'x-api-key': self.api_key})
             if response.status_code == 200:
                 return response.json()
 
@@ -78,10 +74,8 @@ class Api:
             print('Something went wrong with the request: ' + str(e))        
 
     def place_foundation(self, foundation, game_id=''):
-        if game_id:
-            game_id = '?GameId=' + game_id
         try:
-            response = self.sess.post(base_api_path + 'action/startBuild' + game_id, json=foundation, headers={'x-api-key': self.api_key})
+            response = self.sess.post(base_api_path + 'action/startBuild?GameId=' + self.game_id, json=foundation, headers={'x-api-key': self.api_key})
             if response.status_code == 200:
                 return response.json()
 
@@ -92,10 +86,8 @@ class Api:
             print('Something went wrong with the request: ' + str(e))
 
     def build(self, pos, game_id=''):
-        if game_id:
-            game_id = '?GameId=' + game_id
         try:
-            response = self.sess.post(base_api_path + 'action/Build' + game_id, json=pos, headers={'x-api-key': self.api_key})
+            response = self.sess.post(base_api_path + 'action/Build?GameId=' + self.game_id, json=pos, headers={'x-api-key': self.api_key})
             if response.status_code == 200:
                 return response.json()
 
@@ -106,10 +98,8 @@ class Api:
             print('Something went wrong with the request: ' + str(e))
 
     def maintenance(self, pos, game_id=''):
-        if game_id:
-            game_id = '?GameId=' + game_id
         try:
-            response = self.sess.post(base_api_path + 'action/maintenance' + game_id, json=pos, headers={'x-api-key': self.api_key})
+            response = self.sess.post(base_api_path + 'action/maintenance?GameId=' + self.game_id, json=pos, headers={'x-api-key': self.api_key})
             if response.status_code == 200:
                 return response.json()
 
@@ -120,10 +110,8 @@ class Api:
             print('Something went wrong with the request: ' + str(e))
 
     def demolish(self, pos, game_id=''):
-        if game_id:
-            game_id = '?GameId=' + game_id
         try:
-            response = self.sess.post(base_api_path + 'action/demolish' + game_id, json=pos, headers={'x-api-key': self.api_key})
+            response = self.sess.post(base_api_path + 'action/demolish?GameId=' + self.game_id, json=pos, headers={'x-api-key': self.api_key})
             if response.status_code == 200:
                 return response.json()
 
@@ -134,10 +122,8 @@ class Api:
             print('Something went wrong with the request: ' + str(e))
 
     def wait(self, game_id=''):
-        if game_id:
-            game_id = '?GameId=' + game_id
         try:
-            response = self.sess.post(base_api_path + 'action/wait' + game_id, headers={'x-api-key': self.api_key})
+            response = self.sess.post(base_api_path + 'action/wait?GameId=' + self.game_id, headers={'x-api-key': self.api_key})
             if response.status_code == 200:
                 return response.json()
 
@@ -148,10 +134,8 @@ class Api:
             print('Something went wrong with the request: ' + str(e))
 
     def adjust_energy(self, energy_level, game_id=''):
-        if game_id:
-            game_id = '?GameId=' + game_id
         try:
-            response = self.sess.post(base_api_path + 'action/adjustEnergy' + game_id, json=energy_level, headers={'x-api-key': self.api_key})
+            response = self.sess.post(base_api_path + 'action/adjustEnergy?GameId=' + self.game_id, json=energy_level, headers={'x-api-key': self.api_key})
             if response.status_code == 200:
                 return response.json() 
             print('Fatal Error: could not do action adjust energy level')
@@ -161,10 +145,8 @@ class Api:
             print('Something went wrong with the request: ' + str(e))
 
     def buy_upgrades(self, upgrade, game_id=''):
-        if game_id:
-            game_id = '?GameId=' + game_id
         try:
-            response = self.sess.post(base_api_path + 'action/buyUpgrade' + game_id, json=upgrade, headers={'x-api-key': self.api_key})
+            response = self.sess.post(base_api_path + 'action/buyUpgrade?GameId=' + self.game_id, json=upgrade, headers={'x-api-key': self.api_key})
             if response.status_code == 200:
                 return response.json()
 
@@ -174,11 +156,9 @@ class Api:
             print('Fatal Error: could not do action buy upgrades')
             print('Something went wrong with the request: ' + str(e))
 
-    def get_game_state(self, game_id=''):
-        if game_id:
-            game_id = '?GameId=' + game_id
+    def get_game_state(self):
         try:
-            response = self.sess.get(base_api_path + 'gameState' + game_id, headers={'x-api-key': self.api_key})
+            response = self.sess.get(base_api_path + 'gameState?GameId=' + self.game_id, headers={'x-api-key': self.api_key})
             if response.status_code == 200:
                 return response.json()
 
