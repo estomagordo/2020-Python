@@ -1,4 +1,5 @@
 from collections import defaultdict
+from math import isclose
 
 class Strategy:
     def __init__(self, game_state, settings):
@@ -77,6 +78,8 @@ class Strategy:
         self.demolish_replacement = settings['demolish_replacement']
         self.latest_foundation = settings['latest_foundation']
         self.ideal_temperature = settings['ideal_temperature']
+        self.temperature_undershoot = settings['temperature_undershoot']
+        self.temperature_horizon = settings['temperature_horizon']
         
         self.demolished = None
         self.build_order_picks = set()
@@ -412,13 +415,29 @@ class Strategy:
         base_energy_need = [bp for bp in self.game_state.available_residence_buildings if bp.building_name == residence.building_name][0].base_energy_need + (1.8 if 'Charger' in residence.effects else 0.0)
         outdoor_temp = self.game_state.current_temp
         emissivity = [bp for bp in self.game_state.available_residence_buildings if bp.building_name == residence.building_name][0].emissivity * (0.6 if 'Insulation' in residence.effects else 1.0)
+        current_pop = residence.current_pop
 
         current = residence.effective_energy_in
-        target = (-residence.temperature + base_energy_need * degrees_per_excess_mwh - degrees_per_pop * residence.current_pop + residence.temperature * emissivity - outdoor_temp * emissivity + self.target_temp) / degrees_per_excess_mwh
 
-        result = current + (target - current) / self.temperature_dampening_factor
+        def resulting_temperature(new_energy, current_temp, iterations):
+            for _ in range(iterations):
+                current_temp = current_temp + (new_energy - base_energy_need) * degrees_per_excess_mwh + degrees_per_pop * current_pop - (current_temp - outdoor_temp) * emissivity
 
-        return result, base_energy_need, current
+            return current_temp
+
+        lo = 0.0
+        hi = 100.0
+        restemp = resulting_temperature((lo + hi) / 2.0, residence.temperature, self.temperature_horizon)
+
+        while not isclose(restemp, self.ideal_temperature):
+            if restemp < self.ideal_temperature:
+                lo = (lo + hi) / 2.0
+            else:
+                hi = (lo + hi) / 2.0
+
+            restemp = resulting_temperature((lo + hi) / 2.0, residence.temperature, self.temperature_horizon)
+
+        return (lo + hi) / 2.0, base_energy_need, current
 
     def base_energy_need_for_building(self, name):
         for blueprint in self.game_state.available_residence_buildings:
