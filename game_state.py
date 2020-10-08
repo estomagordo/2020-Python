@@ -55,6 +55,8 @@ class GameState:
 
         parts.append(f'Available spaces: {" ".join(str(space) for space in self.available_spaces())}')
         
+        parts.append(f'\nAvailable buildings: {" ".join(str(b) for b in self.available_buildings)}')
+        
         return '\n'.join(parts)
 
     def available_spaces(self):
@@ -146,6 +148,9 @@ class Blueprint:
         self.build_speed = blueprint['buildSpeed']
         self.type = blueprint['type']
         self.release_tick = blueprint['releaseTick']
+
+    def __str__(self):
+        return f'{self.building_name}({self.release_tick})'
 
 
 class BlueprintUtilityBuilding(Blueprint):

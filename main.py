@@ -62,6 +62,9 @@ def simple2():
         commands = []
     
         while game_layer.game_state.turn < game_layer.game_state.max_turns:
+            if game == 0 and game_layer.game_state.turn == 0:
+                print(game_layer.game_state)
+                
             command = strategy.act()
             commands.append(command)
             
