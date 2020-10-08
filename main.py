@@ -36,18 +36,6 @@ def play(commands):
     
     write(filename, commands)
 
-def simple():
-    game_layer.new_game(map_name)
-    print('Starting', 'simple game:', game_layer.game_state.game_id)
-    game_layer.start_game()  
-
-    commands = []
-   
-    while game_layer.game_state.turn < game_layer.game_state.max_turns:
-        commands.append(take_turn())
-
-    play(commands)
-
 def simple2():
     strategy_settings = None
     
@@ -74,13 +62,11 @@ def simple2():
         commands = []
     
         while game_layer.game_state.turn < game_layer.game_state.max_turns:
-            command = take_turn2(strategy)
+            command = strategy.act()
             commands.append(command)
             
             game_layer.translate(command.split())
-            # print(game_layer.game_state)
-
-        # print(game_layer.game_state)
+            
         print(f'Game: {game+1}/{games}')
         play(commands)
 
@@ -166,10 +152,8 @@ def main():
     else:        
         map_number = argv[2]
         map_name += map_number
-
-        if mode == 'simple':
-            simple()
-        elif mode == 'latest':
+        
+        if mode == 'latest':
             play_recorded()
         elif mode == 'named':
             if len(argv) < 3:
@@ -184,59 +168,6 @@ def main():
             simple2()
         else:
             die('Unknown command')
-
-def take_turn():
-    state = game_layer.game_state
-
-    command = ''
-
-    x = -1
-    y = -1
-
-    maxrescount = 3
-
-    if len(state.residences) < maxrescount:
-        for i in range(len(state.map)):
-            if x > -1:
-                break
-            for j in range(len(state.map[i])):
-                if state.map[i][j] == 0:
-                    x = i
-                    y = j
-                    break
-
-        command = game_layer.place_foundation((x, y), game_layer.game_state.available_residence_buildings[0].building_name)
-    else:
-        building = False
-
-        for residence in state.residences:
-            if residence.build_progress < 100:
-                command = game_layer.build((residence.X, residence.Y))
-                building = True
-                break
-
-        if not building:
-            healing = False
-            
-            for residence in state.residences:
-                if residence.health < 30:
-                    command = game_layer.maintenance((residence.X, residence.Y))
-                    healing = True
-                    break
-
-            if not healing:
-                command = game_layer.wait()
-
-    for message in game_layer.game_state.messages:
-        print(message)
-    for error in game_layer.game_state.errors:
-        print('Error: ' + error)
-
-    return command
-
-
-def take_turn2(strategy):
-    return strategy.act()
 
 if __name__ == '__main__':
     main()
