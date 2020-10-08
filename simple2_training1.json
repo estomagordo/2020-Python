@@ -67,5 +67,5 @@
     "latest_foundation": 690,
     "ideal_temperature": 21.0,
     "temperature_undershoot": 0.5,
-    "temperature_horizon": 3
+    "temperature_horizon": 5
 }  

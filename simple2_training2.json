@@ -6,8 +6,8 @@
     "highrise_step": 11000,
     "modern_threshold": 9000,
     "modern_step": 2600,
-    "apartments_threshold": 100000,
-    "apartments_step": 3600,
+    "apartments_threshold": 4000,
+    "apartments_step": 4600,
     "cabin_threshold": 4000,
     "cabin_step": 3900,
     "environmental_threshold": 10000,
@@ -17,8 +17,8 @@
     "max_residences": 19,
     "low_temp": 18.5,
     "high_temp": 23.5,
-    "mall_threshold": 17000,
-    "mall_step": 32000,
+    "mall_threshold": 11000,
+    "mall_step": 12000,
     "wind_turbine_threshold": 8000,
     "wind_turbine_step": 4000,
     "park_threshold": 14000,
@@ -67,5 +67,5 @@
     "latest_foundation": 690,
     "ideal_temperature": 21.0,
     "temperature_undershoot": 0.5,
-    "temperature_horizon": 3
+    "temperature_horizon": 5
 }  
