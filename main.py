@@ -32,7 +32,7 @@ def play(commands):
     filename = f'games\\{map_name}-{timestring}-{game_layer.game_state.game_id}.dump'  
 
     print('Done with game: ' + game_layer.game_state.game_id)
-    print('Final score was: ' + str(game_layer.get_score()['finalScore']))
+    print(f'Final score was: {str(game_layer.get_score()["finalScore"])}\n')
     
     write(filename, commands)
 
