@@ -69,64 +69,63 @@ class GameLayer:
         self.api.set_game_id(self.game_state.game_id)
 
     def end_game(self, game_id=''):
-        param = game_id if game_id else self.game_state.game_id
-        self.api.end_game(param)
+        self.api.end_game()
 
     def start_game(self):
-        self.game_state.update_state(self.api.start_game(self.game_state.game_id))
+        self.game_state.update_state(self.api.start_game())
 
     def place_foundation(self, pos, building_name):
         position = {'X': pos[0], 'Y': pos[1]}
         foundation = {'Position': position, 'BuildingName': building_name}
 
         self.game_state.map[pos[0]][pos[1]] = 1
-        self.game_state.update_state(self.api.place_foundation(foundation, self.game_state.game_id))
+        self.game_state.update_state(self.api.place_foundation(foundation))
 
         return f'place_foundation {pos[0]} {pos[1]} {building_name}\n'
 
     def build(self, pos):
         position = {'position': {'X': pos[0], 'Y': pos[1]}}
-        self.game_state.update_state(self.api.build(position, self.game_state.game_id))
+        self.game_state.update_state(self.api.build(position))
 
         return f'build {pos[0]} {pos[1]}\n'
 
     def maintenance(self, pos):
         position = {'position': {'x': pos[0], 'y': pos[1]}}
-        self.game_state.update_state(self.api.maintenance(position, self.game_state.game_id))
+        self.game_state.update_state(self.api.maintenance(position))
 
         return f'maintenance {pos[0]} {pos[1]}\n'
 
     def demolish(self, pos):
         position = {'position': {'x': pos[0], 'y': pos[1]}}
-        self.game_state.update_state(self.api.demolish(position, self.game_state.game_id))
+        self.game_state.update_state(self.api.demolish(position))
 
         return f'demolish {pos[0]} {pos[1]}\n'
 
     def adjust_energy_level(self, pos, value):
         position = {'x': pos[0], 'y': pos[1]}
-        self.game_state.update_state(self.api.adjust_energy({'position': position, 'value': value}, self.game_state.game_id))
+        self.game_state.update_state(self.api.adjust_energy({'position': position, 'value': value}))
 
         return f'adjust_energy_level {pos[0]} {pos[1]} {value}\n'
 
     def wait(self):
-        self.game_state.update_state(self.api.wait(self.game_state.game_id))
+        self.game_state.update_state(self.api.wait())
 
         return 'wait\n'
 
     def buy_upgrade(self, pos, upgrade):
         position = {'x': pos[0], 'y': pos[1]}
-        self.game_state.update_state(self.api.buy_upgrades({'position': position, 'upgradeAction': upgrade}, self.game_state.game_id))
+        self.game_state.update_state(self.api.buy_upgrades({'position': position, 'upgradeAction': upgrade}))
 
         return f'buy_upgrade {pos[0]} {pos[1]} {upgrade}\n'
 
     def get_score(self):
-        return self.api.get_score(self.game_state.game_id)
+        return self.api.get_score()
 
     def get_game_info(self, game_id):
-        self.game_state = GameState(self.api.get_game_info(game_id))
+        self.game_state = GameState(self.api.get_game_info())
 
     def get_game_state(self, game_id):
-        self.game_state.update_state(self.api.get_game_state(game_id))
+        self.game_state.update_state(self.api.get_game_state())
 
     def get_blueprint(self, building_name):
         res_blueprint = self.get_residence_blueprint(building_name)
