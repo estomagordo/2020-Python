@@ -14,7 +14,7 @@
     "environmental_step": 2600,
     "luxury_threshold": 7000,
     "luxury_step": 700,
-    "max_residences": 19,
+    "max_residences": 39,
     "low_temp": 18.5,
     "high_temp": 23.5,
     "mall_threshold": 11000,
