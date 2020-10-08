@@ -13,7 +13,6 @@ class Strategy:
         self.regulator_base_threshold = settings['regulator_threshold']
         self.caretaker_base_threshold = settings['caretaker_threshold']
         self.charger_base_threshold = settings['charger_threshold']
-        self.waiting_limit = settings['waiting_limit']
         self.repair_limit = settings['repair_limit']
         self.highrise_threshold = settings['highrise_threshold']
         self.highrise_step = settings['highrise_step']        
@@ -36,8 +35,6 @@ class Strategy:
         self.max_residences = settings['max_residences']
         self.low_temp = settings['low_temp']
         self.high_temp = settings['high_temp']
-        self.energy_upstep = settings['energy_upstep']
-        self.energy_downstep = settings['energy_downstep']
         self.maintenance_highrise = settings['maintenance_highrise']
         self.maintenance_apartments = settings['maintenance_apartments']
         self.maintenance_modern = settings['maintenance_modern']
@@ -57,15 +54,12 @@ class Strategy:
         self.lower_charger_threshold = settings['lower_charger_threshold']
         self.highrise_limit = settings['highrise_limit']
         self.energy_change_cooldown = settings['energy_change_cooldown']
-        self.temp_diff_freakout_cutoff = settings['temp_diff_freakout_cutoff']
-        self.temp_diff_freakout_factor = settings['temp_diff_freakout_factor']
         self.mall_weight = settings['mall_weight']
         self.wind_turbine_weight = settings['wind_turbine_weight']
         self.park_weight = settings['park_weight']
         self.residence_weight = settings['residence_weight']
         self.residence_weight_length = settings['residence_weight_length']
         self.target_temp = settings['target_temp']
-        self.temperature_dampening_factor = settings['temperature_dampening_factor']
         self.start_upgrading_turn = settings['start_upgrading_turn']
         self.earliest_demolish = settings['earliest_demolish']
         self.latest_demolish = settings['latest_demolish']
@@ -463,16 +457,6 @@ class Strategy:
         candidates.sort(key=lambda candidate:-candidate[0])
 
         return candidates[0][1]
-
-    def lower_energy(self, diff):
-        factor = self.temp_diff_freakout_factor if diff > self.temp_diff_freakout_cutoff else 1.0
-
-        return factor * self.energy_downstep
-
-    def increase_energy(self, diff):
-        factor = self.temp_diff_freakout_factor if diff > self.temp_diff_freakout_cutoff else 1.0
-
-        return factor * self.energy_upstep
 
     def divide_spaces(self):
         spaces = set(self.game_state.available_spaces())
